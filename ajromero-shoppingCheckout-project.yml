@@ -36,6 +36,8 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: "p4swrd-checkout"
       MYSQL_DATABASE: "shoppingCheckout"
+      MYSQL_USER: usershopping
+      MYSQL_PASSWORD: us3rSh0p
 
   phpmyadmin_db:
     image: phpmyadmin/phpmyadmin

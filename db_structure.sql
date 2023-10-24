@@ -1,7 +1,7 @@
 # Create tables
 CREATE TABLE IF NOT EXISTS products
 (
-    id BIGINT NOT NULL UNIQUE,
+    id BIGINT NOT NULL UNIQUE AUTO_INCREMENT,
     code VARCHAR(50) NOT NULL UNIQUE,
     name VARCHAR(50) NOT NULL,
     stock INT DEFAULT 0 NOT NULL
@@ -23,7 +23,7 @@ CREATE TABLE IF NOT EXISTS customers
 
 CREATE TABLE IF NOT EXISTS customer__addresses
 (
-    id BIGINT NOT NULL UNIQUE,
+    id BIGINT NOT NULL UNIQUE AUTO_INCREMENT,
     address_name VARCHAR(50),
     id_customer VARCHAR(50) NOT NULL,
     state VARCHAR(50),
@@ -37,7 +37,7 @@ CREATE TABLE IF NOT EXISTS customer__addresses
 
 CREATE TABLE IF NOT EXISTS checkouts
 (
-    id BIGINT NOT NULL UNIQUE,
+    id BIGINT NOT NULL UNIQUE AUTO_INCREMENT,
     payment VARCHAR(255),
     status VARCHAR(10),
     created_at DATE,
@@ -50,7 +50,7 @@ CREATE TABLE IF NOT EXISTS checkouts
 
 CREATE TABLE IF NOT EXISTS checkout__products
 (
-    id BIGINT NOT NULL UNIQUE,
+    id BIGINT NOT NULL UNIQUE AUTO_INCREMENT,
     id_product BIGINT NOT NULL,
     id_checkout BIGINT NOT NULL,
     quantity INT DEFAULT 1 NOT NULL
@@ -62,14 +62,14 @@ CREATE TABLE IF NOT EXISTS checkout__products
 
 CREATE TABLE IF NOT EXISTS payment__methods
 (
-    id BIGINT NOT NULL UNIQUE,
+    id BIGINT NOT NULL UNIQUE AUTO_INCREMENT,
     method_name VARCHAR(50) NOT NULL UNIQUE,
     PRIMARY KEY(id)
 );
 
 CREATE TABLE IF NOT EXISTS order__shipping
 (
-    id BIGINT NOT NULL,
+    id BIGINT NOT NULL AUTO_INCREMENT,
     id_address BIGINT NOT NULL,
     id_checkout BIGINT NOT NULL,
     PRIMARY KEY(id)
