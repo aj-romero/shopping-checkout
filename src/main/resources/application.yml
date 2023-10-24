@@ -1,0 +1,35 @@
+spring:
+  application:
+    name: checkout-shopping
+#Database
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: usershopping
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:3306/shoppingCheckout
+    password: us3rSh0p
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+server:
+    port: '9000'
+
+
+#Actuator
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,metrics,loggers
+    enabled-by-default: 'false'
+  endpoint:
+    health:
+      enabled: 'true'
+    metrics:
+      enabled: 'true'
+    loggers:
+      enabled: 'true'
+
+
