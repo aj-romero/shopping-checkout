@@ -1,32 +1,20 @@
 package com.ajromero.common.service;
 
 import com.ajromero.common.persistence.IEntity;
-import com.ajromero.common.persistence.dao.IEntityEmail;
-import com.google.common.collect.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
 
 
-public abstract class AbstractService<T extends IEntity> implements IService<T> {
+/*public abstract class AbstractService<T extends IEntity> implements IService<T> {
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 
-    @Override
-    @Transactional(readOnly = true)
-    public T findOne(final long id) {
-        return getDao().findById(id)
-                .orElse(null);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<T> findAll() {
-        return Lists.newArrayList(getDao().findAll());
-    }
+}
 
 
     @Override
@@ -48,16 +36,6 @@ public abstract class AbstractService<T extends IEntity> implements IService<T> 
     }
 
 
-    protected abstract IEntityEmail<T> getDao();
+    protected abstract JpaRepository<T, Long> getDao();
 
-    @Override
-    public T findByEmail(String email) {
-        return getDao().findByEmail(email);
-    }
-
-
-    @Override
-    public boolean existsByEmail(String email) {
-        return getDao().existsByEmail(email);
-    }
-}
+}*/
