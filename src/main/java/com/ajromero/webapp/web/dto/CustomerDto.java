@@ -32,6 +32,7 @@ public class CustomerDto implements IDto {
             message = "invalid mobile number entered ")
     private String phone;
 
+
     public CustomerDto() {
         //
     }

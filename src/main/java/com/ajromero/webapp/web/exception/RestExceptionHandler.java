@@ -67,4 +67,15 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
                 HttpStatus.BAD_REQUEST,
                 request);
     }
+
+    @ExceptionHandler({ MyBadRequestException.class })
+    protected ResponseEntity<Object> handleBadRequestException(
+            final RuntimeException ex,
+            final WebRequest request) {
+        final ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST,ex.getMessage());
+        return handleExceptionInternal(ex, apiError,
+                new HttpHeaders(),
+                HttpStatus.BAD_REQUEST,
+                request);
+    }
 }

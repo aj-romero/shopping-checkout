@@ -7,4 +7,8 @@ public interface IVerifyContent {
     void verifyContent(boolean resource, String msj);
 
     void verifyEmail(ICustomers customers, String email);
+
+    void verifyBadRequest(boolean resource, String msj);
+
+
 }

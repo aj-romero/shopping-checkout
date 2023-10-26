@@ -2,6 +2,7 @@ package com.ajromero.webapp.web.validation;
 
 import com.ajromero.webapp.persistence.repositories.ICustomers;
 import com.ajromero.webapp.web.exception.EmailResourceException;
+import com.ajromero.webapp.web.exception.MyBadRequestException;
 import com.ajromero.webapp.web.exception.ResourceNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -23,6 +24,14 @@ public class VerifyContent implements IVerifyContent{
         if(customers.existsByEmail(email)) {
             log.warn(email + " customer already exists with the given email account");
             throw new EmailResourceException(email + " customer already exists with the given email account");
+        }
+    }
+
+    @Override
+    public void verifyBadRequest(boolean resource, String msj) {
+        if(resource){
+            log.warn(msj);
+            throw new MyBadRequestException(msj);
         }
     }
 }

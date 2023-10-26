@@ -1,13 +1,12 @@
 package com.ajromero.webapp.service;
 
 import com.ajromero.webapp.persistence.domain.Customer;
-import com.ajromero.webapp.persistence.domain.Product;
 import com.ajromero.webapp.persistence.repositories.ICustomers;
-import com.ajromero.webapp.persistence.repositories.IProducts;
+import com.ajromero.webapp.service.interfaces.ICustomerService;
 import com.ajromero.webapp.web.dto.CustomerDto;
 import com.ajromero.webapp.web.mapper.CustomerMapper;
 import com.ajromero.webapp.web.validation.IVerifyContent;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -15,15 +14,16 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class CustomerService implements ICustomerService{
+@AllArgsConstructor
+public class CustomerService implements ICustomerService {
 
-    @Autowired
-    private ICustomers customers;
 
-    @Autowired
-    IVerifyContent verifyContent;
+    private final ICustomers customers;
 
-    @Autowired
+
+    private final IVerifyContent verifyContent;
+
+
     CustomerMapper customerMapper;
     @Override
     public List<CustomerDto> findAll() {

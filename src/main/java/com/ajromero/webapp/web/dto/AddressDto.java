@@ -11,6 +11,9 @@ import lombok.Setter;
 @Getter
 @Setter
 public class AddressDto implements IDto {
+
+    private Long id;
+
     @Size(min = 2, max = 50, message = "min length is 2 and max length is 50 characters")
     @NotBlank(message = " is required")
     private String addressName;

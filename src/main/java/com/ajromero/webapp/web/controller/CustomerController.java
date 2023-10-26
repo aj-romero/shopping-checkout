@@ -1,9 +1,9 @@
 package com.ajromero.webapp.web.controller;
 
-import com.ajromero.webapp.service.ICustomerService;
+import com.ajromero.webapp.service.interfaces.ICustomerService;
 import com.ajromero.webapp.web.dto.CustomerDto;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,10 +11,10 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("customers")
+@AllArgsConstructor
 public class CustomerController {
 
-    @Autowired
-    ICustomerService customerService;
+    private final ICustomerService customerService;
 
     @PostMapping
     public ResponseEntity<CustomerDto> saveCustomer(@RequestBody @Valid final CustomerDto customer) {
