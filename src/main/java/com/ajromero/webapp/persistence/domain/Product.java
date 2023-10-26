@@ -13,7 +13,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class Products implements IEntity {
+public class Product implements IEntity {
 
 
     @Id
@@ -32,7 +32,7 @@ public class Products implements IEntity {
     @Column(name = "price",  nullable = false)
     private Double price;
 
-    public Products(String code, String name, Integer stock, Double price) {
+    public Product(String code, String name, Integer stock, Double price) {
         this.code = code;
         this.name = name;
         this.stock = stock;
@@ -50,8 +50,8 @@ public class Products implements IEntity {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Products products = (Products) o;
-        return this.getCode().equals(products.getCode());
+        Product product = (Product) o;
+        return this.getCode().equals(product.getCode());
     }
 
     @Override

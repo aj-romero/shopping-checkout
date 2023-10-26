@@ -11,7 +11,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class CheckoutProducts implements IEntity {
+public class CheckoutProduct implements IEntity, Comparable<CheckoutProduct> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,9 +25,14 @@ public class CheckoutProducts implements IEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_product", nullable = false)
-    private Products product;
+    private Product product;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_checkout", nullable = false)
-    private Checkouts checkout;
+    private Checkout checkout;
+
+    @Override
+    public int compareTo(CheckoutProduct o) {
+        return this.getProduct().getId().compareTo(o.getProduct().getId());
+    }
 }

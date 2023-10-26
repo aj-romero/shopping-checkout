@@ -1,8 +1,8 @@
 package com.ajromero.webapp.persistence.repositories;
 
 
-import com.ajromero.webapp.persistence.domain.CustomerAddresses;
-import com.ajromero.webapp.persistence.domain.Customers;
+import com.ajromero.webapp.persistence.domain.CustomerAddress;
+import com.ajromero.webapp.persistence.domain.Customer;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +15,7 @@ import static org.hamcrest.MatcherAssert.*;
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @DisplayName("Integration Customer Addresses Repository test")
-class ICustomerAddressesTest {
+class ICustomerAddressTest {
 
     @Autowired
     ICustomers customers;
@@ -25,14 +25,15 @@ class ICustomerAddressesTest {
 
     @Test
     void whenAddress_thenAssert() {
-        Customers customer = new Customers();
+        Customer customer = new Customer();
         customer.setId("uiid-code-for-customer-from-keycloak");
-        Customers expected = customers.save(customer);
+        Customer expected = customers.save(customer);
 
-        CustomerAddresses address = new CustomerAddresses();
+        CustomerAddress address = new CustomerAddress();
+        address.setAddressName("My house address");
         address.setCustomer(expected);
 
-        CustomerAddresses newExpected = addresses.save(address);
+        CustomerAddress newExpected = addresses.save(address);
 
 
 
@@ -41,13 +42,13 @@ class ICustomerAddressesTest {
 
     @Test
     void whenNewAddressWithCustomer_thenAssert() {
-        Customers customer = new Customers();
+        Customer customer = new Customer();
         customer.setId("uiid-code-for-customer-from-keycloak");
-        Customers expected = customers.save(customer);
+        Customer expected = customers.save(customer);
 
 
 
-        CustomerAddresses address = new CustomerAddresses();
+        CustomerAddress address = new CustomerAddress();
         //address.setCustomer(expected);
         address.setAddressName("Aunty House");
         expected.addAddress(address);

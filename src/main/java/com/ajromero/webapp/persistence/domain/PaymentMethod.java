@@ -6,14 +6,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.Objects;
-
 @Entity
 @Table(name = "payment__methods")
 @Getter
 @Setter
 @NoArgsConstructor
-public class PaymentMethods implements IEntity {
+public class PaymentMethod implements IEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,7 +20,7 @@ public class PaymentMethods implements IEntity {
     @Column(name = "method_name", length = 50, nullable = false, unique = true)
     private String methodName;
 
-    public PaymentMethods(String methodName) {
+    public PaymentMethod(String methodName) {
         this.methodName = methodName;
     }
 
@@ -30,7 +28,7 @@ public class PaymentMethods implements IEntity {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        PaymentMethods that = (PaymentMethods) o;
+        PaymentMethod that = (PaymentMethod) o;
         return this.getMethodName().equals(that.getMethodName());
     }
 

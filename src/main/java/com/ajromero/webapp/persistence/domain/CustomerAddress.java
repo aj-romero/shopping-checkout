@@ -6,14 +6,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.Objects;
-
 @Entity
 @Table(name = "customer__addresses")
 @Getter
 @Setter
 @NoArgsConstructor
-public class CustomerAddresses implements IEntity,Comparable<CustomerAddresses> {
+public class CustomerAddress implements IEntity,Comparable<CustomerAddress> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -41,10 +39,10 @@ public class CustomerAddresses implements IEntity,Comparable<CustomerAddresses> 
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_customer", nullable = false)
-    private Customers customer;
+    private Customer customer;
 
     @Override
-    public int compareTo(CustomerAddresses o) {
+    public int compareTo(CustomerAddress o) {
         return this.getAddressName().compareTo(o.getAddressName());
     }
 
@@ -52,7 +50,7 @@ public class CustomerAddresses implements IEntity,Comparable<CustomerAddresses> 
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        CustomerAddresses that = (CustomerAddresses) o;
+        CustomerAddress that = (CustomerAddress) o;
         return this.getId().equals(that.getId());
     }
 

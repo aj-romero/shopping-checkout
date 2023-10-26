@@ -1,4 +1,7 @@
 spring:
+  output:
+    ansi:
+      enabled: ALWAYS
   application:
     name: checkout-shopping
 #Database
@@ -14,8 +17,23 @@ spring:
       hibernate:
     show-sql: 'true'
 #        dialect: org.hibernate.dialect.MySQLDialect
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: http://localhost:8082/realms/ajromero/protocol/openid-connect/certs
+          issuer-uri: http://localhost:8082/realms/ajromero
 server:
     port: '9000'
+    servlet:
+      context-path: /api
+logging:
+  level:
+    org:
+      springframework: INFO
+    root: WARN
+    com:
+      ajromero: DEBUG
 
 
 #Actuator

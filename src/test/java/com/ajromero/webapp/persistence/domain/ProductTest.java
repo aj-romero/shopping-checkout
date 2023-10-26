@@ -5,19 +5,18 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.mock;
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.*;
 
 @DisplayName("Products entity test")
-class ProductsTest {
+class ProductTest {
 
-    private Products product;
+    private Product product;
 
     @BeforeEach
     void setUp() {
-        product = new Products();
+        product = new Product();
     }
 
     @Test
@@ -44,8 +43,8 @@ class ProductsTest {
 
     @Test
     void whenProductisEqual() {
-        product = new Products("101","Mouse",100,14.40);
-        Products otherProduct = new Products("101","Mouse",100,14.40);
+        product = new Product("101","Mouse",100,14.40);
+        Product otherProduct = new Product("101","Mouse",100,14.40);
 
         assertThat(product,is(equalTo(otherProduct)));
         assertThat(product.hashCode(),is(equalTo(otherProduct.hashCode())));
@@ -56,8 +55,8 @@ class ProductsTest {
 
     @Test
     void whenProductsAreNotEquals_thenAssert() {
-        product = new Products("101","Mouse",100,14.40);
-        Products otherProduct = new Products("102","Mouse",100,14.40);
+        product = new Product("101","Mouse",100,14.40);
+        Product otherProduct = new Product("102","Mouse",100,14.40);
 
         assertThat(product,not(equalTo(otherProduct)));
         assertThat(product.toString(),is(notNullValue()));
@@ -67,7 +66,7 @@ class ProductsTest {
     void wheProductsAjustStock() {
         Integer out = 10;
         Integer expect = 90;
-        product = new Products("101","Mouse",100,14.40);
+        product = new Product("101","Mouse",100,14.40);
 
         product.adjustStock(out);
 

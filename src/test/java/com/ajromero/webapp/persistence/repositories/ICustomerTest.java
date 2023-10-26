@@ -1,33 +1,30 @@
 package com.ajromero.webapp.persistence.repositories;
 
-import com.ajromero.ShoppingApplication;
-import com.ajromero.webapp.persistence.domain.Products;
+import com.ajromero.webapp.persistence.domain.Customer;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-
-
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.*;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
-@DisplayName("Integration Products Repository test")
-class IProductsTest {
+@DisplayName("Integration Customers Repository test")
+class ICustomerTest {
 
     @Autowired
-    private IProducts products;
+    ICustomers customers;
 
     @Test
-    void whenNewProduct_thenSuccess() {
-        Products product = new Products("101","Mouse",100,11.45);
-       // product.setId(null);
+    void whenNewCustomer_thenAssert() {
+        Customer customer = new Customer();
+        customer.setId("uiid-code-for-customer-from-keycloak");
 
-        Products expect = products.save(product);
+        Customer expected = customers.save(customer);
 
-        assertThat(product,is(equalTo(expect)));
+        assertThat(customer,is(equalTo(expected)));
     }
-}
 
+}

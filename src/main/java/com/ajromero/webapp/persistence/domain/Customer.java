@@ -3,10 +3,8 @@ package com.ajromero.webapp.persistence.domain;
 import com.ajromero.common.persistence.IEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -14,7 +12,7 @@ import java.util.TreeSet;
 @Table(name = "customers")
 @Getter
 @Setter
-public class Customers implements IEntity {
+public class Customer implements IEntity {
 
     @Id
     private String id;
@@ -32,9 +30,9 @@ public class Customers implements IEntity {
     private String phone;
 
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
-    private Set<CustomerAddresses> addresses;
+    private Set<CustomerAddress> addresses;
 
-    public Customers(String id, String firstName, String lastName, String email, String phone) {
+    public Customer(String id, String firstName, String lastName, String email, String phone) {
         this();
         this.id = id;
         this.firstName = firstName;
@@ -43,11 +41,11 @@ public class Customers implements IEntity {
         this.phone = phone;
     }
 
-    public Customers() {
+    public Customer() {
         this.addresses = new TreeSet<>();
     }
 
-    public void addAddress(CustomerAddresses address){
+    public void addAddress(CustomerAddress address){
         address.setCustomer(this);
         this.addresses.add(address);
     }
@@ -56,8 +54,8 @@ public class Customers implements IEntity {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Customers customers = (Customers) o;
-        return this.getId().equals(customers.getId());
+        Customer customer = (Customer) o;
+        return this.getId().equals(customer.getId());
     }
 
     @Override

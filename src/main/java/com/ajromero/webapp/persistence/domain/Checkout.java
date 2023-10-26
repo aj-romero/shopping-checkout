@@ -4,11 +4,11 @@ import com.ajromero.common.persistence.IEntity;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Date;
 import java.util.Set;
+import java.util.TreeSet;
 
 @Entity
 @Table(name = "checkouts")
@@ -16,31 +16,48 @@ import java.util.Set;
 @Setter
 //@NoArgsConstructor
 @Builder
-public class Checkouts implements IEntity {
+public class Checkout implements IEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String payment;
-    private String status;
+
+    @Enumerated(EnumType.STRING)
+    private Status status;
     private Date createdAt;
     private Date updatedAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_customer")
-    private Customers customer;
+    private Customer customer;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_address_billing")
-    private CustomerAddresses addressBilling;
+    private CustomerAddress addressBilling;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_payment")
-    private PaymentMethods paymentMethod;
+    private PaymentMethod paymentMethod;
 
     @OneToMany(mappedBy = "checkout", cascade = CascadeType.ALL)
-    private Set<CheckoutProducts> products;
+    private Set<CheckoutProduct> products;
+
+    @OneToOne(mappedBy = "checkout", cascade = CascadeType.ALL)
+    private OrderShipping orderShipping;
+
+    public void addDetail(CheckoutProduct detail){
+        if(this.products == null) {
+            this.products = new TreeSet<>();
+        }
+        detail.setCheckout(this);
+        products.add(detail);
+    }
+
+    public enum Status {
+        OPEN,DONE;
+    }
 
 
 }
