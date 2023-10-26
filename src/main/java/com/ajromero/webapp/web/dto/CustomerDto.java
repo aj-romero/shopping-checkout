@@ -1,7 +1,6 @@
 package com.ajromero.webapp.web.dto;
 
 import com.ajromero.common.interfaces.IDto;
-import com.ajromero.webapp.web.validator.EmailUnique;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -27,7 +26,6 @@ public class CustomerDto implements IDto {
 
     @Email(message = "should be valid")
     @NotBlank(message = " is required")
-    @EmailUnique
     private String email;
 
     @Pattern(regexp = "^\\+503(?:\\s\\d{4}){2}$",

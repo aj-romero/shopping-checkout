@@ -27,7 +27,7 @@ public class ProductService implements IProductService{
     @Override
     public List<Product> findAll() {
         List<Product> list = products.findAll();
-        verifyContent.verifyListContent(list.isEmpty());
+        verifyContent.verifyContent(list.isEmpty(), "No products available");
         return list;
     }
 

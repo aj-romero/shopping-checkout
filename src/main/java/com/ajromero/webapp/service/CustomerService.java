@@ -29,14 +29,15 @@ public class CustomerService implements ICustomerService{
     public List<CustomerDto> findAll() {
         List<CustomerDto> list = customers.findAll()
                 .stream().map(customerMapper::toDto).toList();
-        verifyContent.verifyListContent(list.isEmpty());
+        verifyContent.verifyContent(list.isEmpty(),"Customers aren't available");
         return list;
     }
 
     @Override
     public CustomerDto getCustomer() {
-        String userId = SecurityContextHolder.getContext().getAuthentication().getName();
+        String userId = this.getUserId();
         CustomerDto customer = customerMapper.toDto(customers.findById(userId).orElseThrow());
+        verifyContent.verifyContent(customer == null,"Customer not found");
         return customer;
     }
 
@@ -47,7 +48,8 @@ public class CustomerService implements ICustomerService{
 
     @Override
     public CustomerDto save(CustomerDto resource) {
-        String userId = SecurityContextHolder.getContext().getAuthentication().getName();
+        String userId = this.getUserId();
+        verifyContent.verifyEmail(customers, resource.getEmail());
         Customer newCustomer = customerMapper.toEntity(resource);
         if(userId.isEmpty()){
             newCustomer.setId("uuid-new-customer01" + Math.random());
@@ -60,13 +62,19 @@ public class CustomerService implements ICustomerService{
 
     @Override
     public CustomerDto update(CustomerDto resource) {
-        return null;
+        String userId = this.getUserId();
+        Customer customer = customerMapper.toEntity(resource);
+        customer.setId(userId);
+        return customerMapper.toDto(customers.save(customer));
     }
 
+    private String getUserId(){
+        return SecurityContextHolder.getContext().getAuthentication().getName();
+    }
 
     @Override
     public void simpleNew() {
-        String id = SecurityContextHolder.getContext().getAuthentication().getName();
+        String id = this.getUserId();
         Customer newCustomer = new Customer();
         newCustomer.setId(id);
         if(customers.findById(id).isEmpty()){

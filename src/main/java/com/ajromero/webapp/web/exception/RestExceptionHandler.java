@@ -21,7 +21,7 @@ import java.util.Map;
 @ControllerAdvice
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
-    @ExceptionHandler({ResourceNotFoundException.class })
+    @ExceptionHandler({ResourceNotFoundException.class})
     protected ResponseEntity<Object> handleNotFound(
             final RuntimeException ex,
             final WebRequest request) {
@@ -53,5 +53,18 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
             errors.put(fieldError.getField(), fieldError.getDefaultMessage());
         }
         return errors;
+    }
+
+    @ExceptionHandler({ EmailResourceException.class })
+    protected ResponseEntity<Object> handleEmailException(
+            final RuntimeException ex,
+            final WebRequest request) {
+        Map<String, String> errors = new HashMap<>();
+        errors.put("email",ex.getMessage());
+        final ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST,"Invalid request content.", errors);
+        return handleExceptionInternal(ex, apiError,
+                new HttpHeaders(),
+                HttpStatus.BAD_REQUEST,
+                request);
     }
 }

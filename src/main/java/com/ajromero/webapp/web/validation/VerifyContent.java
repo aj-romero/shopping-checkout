@@ -1,5 +1,7 @@
 package com.ajromero.webapp.web.validation;
 
+import com.ajromero.webapp.persistence.repositories.ICustomers;
+import com.ajromero.webapp.web.exception.EmailResourceException;
 import com.ajromero.webapp.web.exception.ResourceNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -7,11 +9,20 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 public class VerifyContent implements IVerifyContent{
+
     @Override
-    public void verifyListContent(boolean list) {
-        if(list){
-            log.warn("List of products is empty");
-            throw new ResourceNotFoundException("No products available");
+    public void verifyContent(boolean resource, String msj) {
+        if(resource){
+            log.warn(msj);
+            throw new ResourceNotFoundException(msj);
+        }
+    }
+
+    @Override
+    public void verifyEmail(ICustomers customers, String email) {
+        if(customers.existsByEmail(email)) {
+            log.warn(email + " customer already exists with the given email account");
+            throw new EmailResourceException(email + " customer already exists with the given email account");
         }
     }
 }
