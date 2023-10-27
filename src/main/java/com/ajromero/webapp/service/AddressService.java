@@ -40,7 +40,7 @@ public class AddressService implements IAddressService {
     @Override
     public AddressDto update(Long id, AddressDto resource) {
         verifyContent.verifyBadRequest(resource.getId()==null,"Id is required");
-        verifyContent.verifyBadRequest(id.equals(resource.getId()), "id and URI id don't match");
+        verifyContent.verifyBadRequest(!id.equals(resource.getId()), "id and URI id don't match");
         verifyContent.verifyContent(addresses.findById(resource.getId()).isEmpty(),"Address no found");
         CustomerAddress address = addresses.save(addressMapper.toEntity(resource));
         return addressMapper.toDto(address);
