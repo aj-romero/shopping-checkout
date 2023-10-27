@@ -24,7 +24,7 @@ CREATE TABLE IF NOT EXISTS customers
 CREATE TABLE IF NOT EXISTS customer__addresses
 (
     id BIGINT NOT NULL UNIQUE AUTO_INCREMENT,
-    address_name VARCHAR(50),
+    address_name VARCHAR(50) NOT NULL UNIQUE,
     id_customer VARCHAR(50) NOT NULL,
     state VARCHAR(50),
     city VARCHAR(50),
@@ -43,7 +43,7 @@ CREATE TABLE IF NOT EXISTS checkouts
     created_at DATE,
     updated_at DATE,
     id_customer VARCHAR(50),
-    id_customer_billing BIGINT,
+    id_address_billing BIGINT,
     id_payment BIGINT,
     PRIMARY KEY(id)
 );
@@ -93,7 +93,7 @@ ALTER TABLE checkouts
 ;
 
 ALTER TABLE checkouts
-    ADD    FOREIGN KEY (id_customer_billing)
+    ADD    FOREIGN KEY (id_address_billing)
     REFERENCES customer__addresses(id)
     ON DELETE RESTRICT
     ON UPDATE RESTRICT
