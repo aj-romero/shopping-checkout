@@ -39,11 +39,21 @@ public class AddressService implements IAddressService {
 
     @Override
     public AddressDto update(Long id, AddressDto resource) {
-        verifyContent.verifyBadRequest(resource.getId()==null,"Id is required");
-        verifyContent.verifyBadRequest(!id.equals(resource.getId()), "id and URI id don't match");
-        verifyContent.verifyContent(addresses.findById(resource.getId()).isEmpty(),"Address no found");
-        CustomerAddress address = addresses.save(addressMapper.toEntity(resource));
-        return addressMapper.toDto(address);
+        verifyContent.verifyBadRequest(resource.getId()==null,
+                "Id is required");
+        verifyContent.verifyBadRequest(!id.equals(resource.getId()),
+                "id and URI id don't match");
+        verifyContent.verifyContent(addresses.findById(resource.getId()).isEmpty(),
+                "Address no found");
+        CustomerAddress address = addressMapper.toEntity(resource);
+
+        String userId = this.getUserId();
+        Optional<Customer> customer = customers.findById(userId);
+        verifyContent.verifyContent(customer.isEmpty(),"Error customer no found");
+        address.setCustomer(customer.orElseThrow());
+
+        CustomerAddress result = addresses.save(address);
+        return addressMapper.toDto(result);
     }
 
     @Override

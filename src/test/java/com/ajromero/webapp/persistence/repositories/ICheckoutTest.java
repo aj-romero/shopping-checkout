@@ -36,6 +36,8 @@ class ICheckoutTest {
         checkout.setStatus(Checkout.Status.OPEN);
         checkout.setCustomer(expected);
 
+        System.out.println(checkout.getCreatedAt());
+
         Checkout checkExpected = checkouts.save(checkout);
         assertThat(checkout,is(equalTo(checkExpected)));
     }

@@ -27,6 +27,15 @@ public class CheckoutProduct implements IEntity, Comparable<CheckoutProduct> {
     @JoinColumn(name = "id_product", nullable = false)
     private Product product;
 
+    @Override
+    public String toString() {
+        return "CheckoutProduct (" +
+                "id=" + id +
+                ", quantity=" + quantity +
+                ", price=" + price +
+                ')';
+    }
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_checkout", nullable = false)
     private Checkout checkout;

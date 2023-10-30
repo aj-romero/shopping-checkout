@@ -4,6 +4,7 @@ import com.ajromero.common.persistence.IEntity;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Date;
@@ -14,8 +15,8 @@ import java.util.TreeSet;
 @Table(name = "checkouts")
 @Getter
 @Setter
-//@NoArgsConstructor
-@Builder
+@NoArgsConstructor
+//@Builder
 public class Checkout implements IEntity {
 
     @Id
@@ -26,7 +27,11 @@ public class Checkout implements IEntity {
 
     @Enumerated(EnumType.STRING)
     private Status status;
+
+    @Column(name = "created_at")
     private Date createdAt;
+
+    @Column(name = "updated_at")
     private Date updatedAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -57,6 +62,17 @@ public class Checkout implements IEntity {
 
     public enum Status {
         OPEN,DONE;
+    }
+
+    @PrePersist
+    protected void prePersist() {
+        this.createdAt = new Date();
+        this.updatedAt = new Date();
+    }
+
+    @PreUpdate
+    protected void preUpdate() {
+        this.updatedAt = new Date();
     }
 
 
