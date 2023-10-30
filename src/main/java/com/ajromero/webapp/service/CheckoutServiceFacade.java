@@ -57,6 +57,22 @@ public class CheckoutServiceFacade {
         return newProduct;
     }
 
+    public Checkout updateProductQuantity(Long id, Long idProduct, Integer qty, ICheckout checkouts) {
+        verifyContent.verifyBadRequest(!checkouts.existsById(id),id + " id URI not found in checkouts");
+        Checkout checkout = checkouts.findById(id).orElseThrow();
+        boolean idExistsInCk = checkout.getProducts().stream().
+                anyMatch(item -> item.getProduct().getId().equals(idProduct));
+        verifyContent.verifyContent(!idExistsInCk, "Product with id "+idProduct+" no found in checkout");
+        basicValidator.validate(ckMapper.toDto(checkout));
+        CheckoutProduct ckproduct = checkout.getProducts().stream()
+                .filter(detail -> detail.getProduct().getId().equals(idProduct))
+                .findFirst().orElseThrow();
+        ckproduct.adjustQuatity(qty); //previo a esto se tendria que validar que si la nueva cantidad es menor que zero elimnar el checkout
+        checkout.addDetail(ckproduct);
+        return checkout;
+
+    }
+
     public CheckoutBasicDto toDto(Checkout resource) {
         return ckMapper.toDto(resource);
     }

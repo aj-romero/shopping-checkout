@@ -38,13 +38,13 @@ public class ProductChain implements ICheckoutChain<CheckoutBasicDto>{
               result = false;
               //break;
           }
-          if(newProduct.get().getStock() > item.getQuantity()) {
+          if(newProduct.get().getStock() < item.getQuantity()) {
               verifyContent.verifyBadRequest(true,
                       "Product with id "+ id +" hasn't that quantity");
               result = false;
               //break;
           }
-          if(item.getPrice() >= newProduct.get().getPrice()) {
+          if(item.getPrice() < newProduct.get().getPrice()) {
                 verifyContent.verifyBadRequest(true,
                         "Check the price for the product with id " + id);
                 result = false;

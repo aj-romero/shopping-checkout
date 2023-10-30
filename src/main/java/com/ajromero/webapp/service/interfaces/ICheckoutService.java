@@ -8,4 +8,6 @@ public interface ICheckoutService {
     CheckoutBasicDto saveCheckoutBasic(CheckoutBasicDto resource);
 
     CheckoutBasicDto addProduct(Long id, CheckoutProductDto product);
+
+    CheckoutBasicDto updateQuantityProduct(Long id, Long idProduct, Integer quantity);
 }

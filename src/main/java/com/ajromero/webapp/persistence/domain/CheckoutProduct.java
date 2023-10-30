@@ -44,4 +44,11 @@ public class CheckoutProduct implements IEntity, Comparable<CheckoutProduct> {
     public int compareTo(CheckoutProduct o) {
         return this.getProduct().getId().compareTo(o.getProduct().getId());
     }
+
+    public void adjustQuatity(int qty) {
+        int newQuantity = this.quantity + qty;
+        if (newQuantity >= 1) {
+            this.quantity = newQuantity;
+        }
+    }
 }

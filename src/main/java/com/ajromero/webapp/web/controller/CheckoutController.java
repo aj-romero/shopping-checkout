@@ -4,6 +4,7 @@ import com.ajromero.webapp.service.interfaces.ICheckoutService;
 import com.ajromero.webapp.web.dto.CheckoutBasicDto;
 import com.ajromero.webapp.web.dto.CheckoutProductDto;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
@@ -36,7 +37,7 @@ public class CheckoutController {
     public ResponseEntity<CheckoutBasicDto> updateQuantityProduct(
             @PathVariable("id") final @Positive Long id,
             @PathVariable("idProduct") final @Positive Long idProduct,
-            @RequestBody final Integer quantity) {
+            @RequestBody @DecimalMin(value =  "-9999") final Integer quantity) {
         return new ResponseEntity<>(checkoutService.updateQuantityProduct(id,idProduct,quantity), HttpStatus.CREATED);
     }
 }

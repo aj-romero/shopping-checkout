@@ -30,8 +30,15 @@ public class CheckoutService implements ICheckoutService {
     public CheckoutBasicDto addProduct(Long id, CheckoutProductDto product) {
         CheckoutProduct newProduct = facade.addProduct(id, product,checkouts);
         Checkout checkout = checkouts.findById(id).orElseThrow();
-        checkout.addDetail(newProduct);
+        checkout.addDetail(newProduct);//esto se puede enviar a facade
         Checkout result = checkouts.save(checkout);
+        return facade.toDto(result);
+    }
+
+    @Override
+    public CheckoutBasicDto updateQuantityProduct(Long id, Long idProduct, Integer quantity) {
+        Checkout updateCheckout = facade.updateProductQuantity(id, idProduct,quantity,checkouts);
+        Checkout result = checkouts.save(updateCheckout);
         return facade.toDto(result);
     }
 }
