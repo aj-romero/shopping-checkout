@@ -10,4 +10,6 @@ public interface ICheckoutService {
     CheckoutBasicDto addProduct(Long id, CheckoutProductDto product);
 
     CheckoutBasicDto updateQuantityProduct(Long id, Long idProduct, Integer quantity);
+
+    void deleteCheckoutProduct(Long id,Long idProduct);
 }

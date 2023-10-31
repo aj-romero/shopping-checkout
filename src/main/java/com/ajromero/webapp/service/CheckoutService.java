@@ -41,4 +41,9 @@ public class CheckoutService implements ICheckoutService {
         Checkout result = checkouts.save(updateCheckout);
         return facade.toDto(result);
     }
+
+    @Override
+    public void deleteCheckoutProduct(Long id, Long idProduct) {
+        facade.removeCheckoutProduct(id, idProduct, checkouts);
+    }
 }

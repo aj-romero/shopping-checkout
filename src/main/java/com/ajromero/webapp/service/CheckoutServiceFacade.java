@@ -83,4 +83,19 @@ public class CheckoutServiceFacade {
         return SecurityContextHolder.getContext().getAuthentication().getName();
     }
 
+    public void removeCheckoutProduct(Long id, Long idProduct, ICheckout checkouts) {
+        verifyContent.verifyBadRequest(!checkouts.existsById(id),id + " id URI not found in checkouts");
+        Checkout checkout = checkouts.findById(id).orElseThrow();
+        boolean idExistsInCk = checkout.getProducts().stream().
+                anyMatch(item -> item.getProduct().getId().equals(idProduct));
+        verifyContent.verifyContent(!idExistsInCk, "Product with id "+idProduct+" no found in checkout");
+        CheckoutProduct rmProduct = checkout.getProducts().stream()
+                .filter(detail -> detail.getProduct().getId().equals(idProduct))
+                .findFirst().orElseThrow();
+        checkout.getProducts().remove(rmProduct);
+        checkouts.save(checkout);
+        if (checkout.getProducts().isEmpty()) {
+            checkouts.delete(checkout);
+        }
+    }
 }

@@ -38,6 +38,15 @@ public class CheckoutController {
             @PathVariable("id") final @Positive Long id,
             @PathVariable("idProduct") final @Positive Long idProduct,
             @RequestBody @DecimalMin(value =  "-9999") final Integer quantity) {
-        return new ResponseEntity<>(checkoutService.updateQuantityProduct(id,idProduct,quantity), HttpStatus.CREATED);
+        return new ResponseEntity<>(checkoutService.updateQuantityProduct(id,idProduct,quantity), HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{id}/products/{idProduct}")
+    @ResponseStatus(HttpStatus.OK)
+    public void deleteCheckoutProduct(
+            @PathVariable("id") final @Positive Long id,
+            @PathVariable("idProduct") final @Positive Long idProduct) {
+        checkoutService.deleteCheckoutProduct(id,idProduct);
+        //return new ResponseEntity<>(checkoutService.deleteCheckoutProduct(id,idProduct), HttpStatus.CREATED);
     }
 }
