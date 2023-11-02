@@ -18,13 +18,13 @@ import static org.hamcrest.MatcherAssert.*;
 @DisplayName("Integration Checkout Repository test")
 class ICheckoutTest {
     @Autowired
-    ICustomers customers;
+    ICustomerRepository customers;
 
     @Autowired
-    IProducts products;
+    IProductRepository products;
 
     @Autowired
-    ICheckout checkouts;
+    ICheckoutRepository checkouts;
 
     @Test
     void whenNewCheckoutSimple_thenAssert() {
@@ -32,7 +32,7 @@ class ICheckoutTest {
         customer.setId("uiid-code-for-customer-from-keycloak");
         Customer expected = customers.save(customer);
 
-        Checkout checkout = Checkout.builder().build();
+        Checkout checkout = new Checkout();
         checkout.setStatus(Checkout.Status.OPEN);
         checkout.setCustomer(expected);
 
@@ -52,7 +52,7 @@ class ICheckoutTest {
         customer.setId("uiid-code-for-customer-from-keycloak");
         Customer newCustomer = customers.save(customer);
 
-        Checkout checkout = Checkout.builder().build();
+        Checkout checkout = new Checkout();
         checkout.setCustomer(newCustomer);
 
         CheckoutProduct detail = new CheckoutProduct();

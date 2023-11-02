@@ -1,12 +1,10 @@
 package com.ajromero.webapp.persistence.repositories;
 
-import com.ajromero.webapp.persistence.domain.Customer;
 import com.ajromero.webapp.persistence.domain.CustomerAddress;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-import java.util.Optional;
-
-public interface ICustomerAddresses extends JpaRepository<CustomerAddress,Long> {
-
-
+@Repository
+public interface ICustomerAddressRepository extends JpaRepository<CustomerAddress,Long> {
+    //
 }

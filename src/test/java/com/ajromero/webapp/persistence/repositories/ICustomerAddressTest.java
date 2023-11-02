@@ -18,10 +18,10 @@ import static org.hamcrest.MatcherAssert.*;
 class ICustomerAddressTest {
 
     @Autowired
-    ICustomers customers;
+    ICustomerRepository customers;
 
     @Autowired
-    ICustomerAddresses addresses;
+    ICustomerAddressRepository addresses;
 
     @Test
     void whenAddress_thenAssert() {
@@ -31,7 +31,13 @@ class ICustomerAddressTest {
 
         CustomerAddress address = new CustomerAddress();
         address.setAddressName("My house address");
+        address.setCity("Mejicanos");
         address.setCustomer(expected);
+        address.setState("San Salvador");
+        address.setHouseNumber("29");
+        address.setReferenceName("Alber Romero");
+        address.setReferencePhone("22068331");
+        address.setStreet("Av Montreal Col Cantizano 29");
 
         CustomerAddress newExpected = addresses.save(address);
 
@@ -51,6 +57,12 @@ class ICustomerAddressTest {
         CustomerAddress address = new CustomerAddress();
         //address.setCustomer(expected);
         address.setAddressName("Aunty House");
+        address.setState("San Salvador");
+        address.setHouseNumber("29");
+        address.setReferenceName("Alber Romero");
+        address.setReferencePhone("22068331");
+        address.setStreet("Av Montreal Col Cantizano 29");
+        address.setCity("Mejicanos");
         expected.addAddress(address);
         customers.save(expected);
 

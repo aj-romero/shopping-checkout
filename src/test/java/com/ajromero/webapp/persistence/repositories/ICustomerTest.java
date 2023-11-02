@@ -15,7 +15,7 @@ import static org.hamcrest.MatcherAssert.*;
 class ICustomerTest {
 
     @Autowired
-    ICustomers customers;
+    ICustomerRepository customers;
 
     @Test
     void whenNewCustomer_thenAssert() {

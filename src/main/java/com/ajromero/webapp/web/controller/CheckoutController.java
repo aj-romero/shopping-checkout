@@ -1,8 +1,10 @@
 package com.ajromero.webapp.web.controller;
 
 import com.ajromero.webapp.service.interfaces.ICheckoutService;
+import com.ajromero.webapp.web.dto.CCheckoutDto;
 import com.ajromero.webapp.web.dto.CheckoutBasicDto;
 import com.ajromero.webapp.web.dto.CheckoutProductDto;
+import com.ajromero.webapp.web.dto.CheckoutShippingDto;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Min;
@@ -42,11 +44,27 @@ public class CheckoutController {
     }
 
     @DeleteMapping("/{id}/products/{idProduct}")
-    @ResponseStatus(HttpStatus.OK)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteCheckoutProduct(
             @PathVariable("id") final @Positive Long id,
             @PathVariable("idProduct") final @Positive Long idProduct) {
         checkoutService.deleteCheckoutProduct(id,idProduct);
         //return new ResponseEntity<>(checkoutService.deleteCheckoutProduct(id,idProduct), HttpStatus.CREATED);
     }
+
+    @PostMapping("/{id}/shippingAddress/{idCustomerAddress}")
+    public ResponseEntity<CheckoutShippingDto> saveShippingAddress(
+            @PathVariable("id") final @Positive Long id,
+            @PathVariable("idCustomerAddress") final @Positive Long idCustomerAddress) {
+        return new ResponseEntity<>(checkoutService.saveShippingAddress(id,idCustomerAddress), HttpStatus.CREATED);
+    }
+
+    @PutMapping("/{id}/shippingAddress/{idCustomerAddress}")
+    public ResponseEntity<CheckoutShippingDto> updateShippingAddress(
+            @PathVariable("id") final @Positive Long id,
+            @PathVariable("idCustomerAddress") final @Positive Long idCustomerAddress) {
+        return new ResponseEntity<>(checkoutService.updateShippingAddress(id,idCustomerAddress), HttpStatus.OK);
+    }
+
+
 }

@@ -32,6 +32,9 @@ public class Customer implements IEntity {
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
     private Set<CustomerAddress> addresses;
 
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
+    private Set<CardPayment> cards;
+
     public Customer(String id, String firstName, String lastName, String email, String phone) {
         this();
         this.id = id;
@@ -43,11 +46,17 @@ public class Customer implements IEntity {
 
     public Customer() {
         this.addresses = new TreeSet<>();
+        this.cards = new TreeSet<>();
     }
 
     public void addAddress(CustomerAddress address){
         address.setCustomer(this);
         this.addresses.add(address);
+    }
+
+    public void addCardPayment(CardPayment card) {
+        card.setCustomer(this);
+        this.cards.add(card);
     }
 
     @Override

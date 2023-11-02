@@ -10,6 +10,8 @@ import jakarta.validation.constraints.Positive;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Objects;
+
 
 public class CheckoutProductDto implements IDto,Comparable<CheckoutProductDto> {
     @Getter @Setter private Long id;
@@ -21,11 +23,9 @@ public class CheckoutProductDto implements IDto,Comparable<CheckoutProductDto> {
     @NotNull(message = "is required")
     @Getter @Setter private Integer quantity;
 
-    @Positive
-    @NotNull(message = " is required")
     @Getter @Setter private Double price;
 
-    private final ICalcTotal total;
+    private final ICalcTotal<CheckoutProductDto> total;
 
     public CheckoutProductDto() {
         //
@@ -39,5 +39,18 @@ public class CheckoutProductDto implements IDto,Comparable<CheckoutProductDto> {
     @Override
     public int compareTo(CheckoutProductDto o) {
         return this.getIdProduct().compareTo(o.getIdProduct());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        CheckoutProductDto that = (CheckoutProductDto) o;
+        return this.getIdProduct().equals(that.getIdProduct());
+    }
+
+    @Override
+    public int hashCode() {
+        return this.getIdProduct().hashCode() + 53;
     }
 }

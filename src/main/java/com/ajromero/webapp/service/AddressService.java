@@ -2,8 +2,8 @@ package com.ajromero.webapp.service;
 
 import com.ajromero.webapp.persistence.domain.Customer;
 import com.ajromero.webapp.persistence.domain.CustomerAddress;
-import com.ajromero.webapp.persistence.repositories.ICustomerAddresses;
-import com.ajromero.webapp.persistence.repositories.ICustomers;
+import com.ajromero.webapp.persistence.repositories.ICustomerAddressRepository;
+import com.ajromero.webapp.persistence.repositories.ICustomerRepository;
 import com.ajromero.webapp.service.interfaces.IAddressService;
 import com.ajromero.webapp.web.dto.AddressDto;
 import com.ajromero.webapp.web.mapper.AddressMapper;
@@ -11,15 +11,17 @@ import com.ajromero.webapp.web.validation.IVerifyContent;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
 @AllArgsConstructor
+@Transactional (readOnly = true)
 public class AddressService implements IAddressService {
-    private final ICustomerAddresses addresses;
-    private final ICustomers customers;
+    private final ICustomerAddressRepository addresses;
+    private final ICustomerRepository customers;
     private final IVerifyContent verifyContent;
     private final AddressMapper addressMapper;
 
@@ -28,6 +30,7 @@ public class AddressService implements IAddressService {
     }
 
     @Override
+    @Transactional
     public AddressDto save(AddressDto resource) {
         String userId = this.getUserId();
         Optional<Customer> customer = customers.findById(userId);
@@ -38,6 +41,7 @@ public class AddressService implements IAddressService {
     }
 
     @Override
+    @Transactional
     public AddressDto update(Long id, AddressDto resource) {
         verifyContent.verifyBadRequest(resource.getId()==null,
                 "Id is required");
@@ -57,6 +61,7 @@ public class AddressService implements IAddressService {
     }
 
     @Override
+    @Transactional (readOnly = true)
     public List<AddressDto> findAll() {
         List<AddressDto> list = addresses.findAll().stream().map(addressMapper::toDto).toList();
         verifyContent.verifyContent(list.isEmpty(), "No addresses found");
@@ -64,6 +69,7 @@ public class AddressService implements IAddressService {
     }
 
     @Override
+    @Transactional (readOnly = true)
     public Optional<AddressDto> findById(Long id) {
         Optional<AddressDto> address = addresses.findById(id).map(addressMapper::toDto);
         verifyContent.verifyContent(address.isEmpty(), "Address not found");

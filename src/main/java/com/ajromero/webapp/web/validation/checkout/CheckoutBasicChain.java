@@ -1,7 +1,7 @@
 package com.ajromero.webapp.web.validation.checkout;
 
 import com.ajromero.webapp.persistence.domain.Customer;
-import com.ajromero.webapp.persistence.repositories.ICustomers;
+import com.ajromero.webapp.persistence.repositories.ICustomerRepository;
 import com.ajromero.webapp.web.dto.CheckoutBasicDto;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -10,9 +10,9 @@ import org.springframework.stereotype.Component;
 public class CheckoutBasicChain implements ICheckoutChain<CheckoutBasicDto>{
 
     private ICheckoutChain<CheckoutBasicDto> validator;
-    private ICustomers customers;
+    private ICustomerRepository customers;
 
-    public CheckoutBasicChain(ICustomers customers) {
+    public CheckoutBasicChain(ICustomerRepository customers) {
         this.customers = customers;
     }
 

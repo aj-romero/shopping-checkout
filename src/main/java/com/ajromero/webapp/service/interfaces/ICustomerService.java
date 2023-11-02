@@ -6,7 +6,7 @@ import com.ajromero.webapp.web.dto.CustomerDto;
 
 public interface ICustomerService extends IServiceBasic<CustomerDto,String> {
 
-    void simpleNew();
+    /*void simpleNew();*/
 
     CustomerDto getCustomer();
 

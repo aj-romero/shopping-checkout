@@ -4,7 +4,7 @@ package com.ajromero.webapp.web.utils;
 
 import com.ajromero.webapp.web.dto.CheckoutProductDto;
 
-public class CalculateTotal implements ICalcTotal {
+public class CalculateTotal implements ICalcTotal<CheckoutProductDto> {
     @Override
     public Double calculateTotal(CheckoutProductDto product) {
         return product.getPrice() * product.getQuantity();

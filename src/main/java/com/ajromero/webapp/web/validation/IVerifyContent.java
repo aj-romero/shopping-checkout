@@ -1,12 +1,12 @@
 package com.ajromero.webapp.web.validation;
 
-import com.ajromero.webapp.persistence.repositories.ICustomers;
+import com.ajromero.webapp.persistence.repositories.ICustomerRepository;
 
 public interface IVerifyContent {
 
     void verifyContent(boolean resource, String msj);
 
-    void verifyEmail(ICustomers customers, String email);
+    void verifyEmail(ICustomerRepository customers, String email);
 
     void verifyBadRequest(boolean resource, String msj);
 

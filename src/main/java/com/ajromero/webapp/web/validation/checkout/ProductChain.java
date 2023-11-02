@@ -1,14 +1,12 @@
 package com.ajromero.webapp.web.validation.checkout;
 
 import com.ajromero.webapp.persistence.domain.Product;
-import com.ajromero.webapp.persistence.repositories.IProducts;
+import com.ajromero.webapp.persistence.repositories.IProductRepository;
 import com.ajromero.webapp.web.dto.CheckoutBasicDto;
 import com.ajromero.webapp.web.dto.CheckoutProductDto;
 import com.ajromero.webapp.web.validation.IVerifyContent;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.Iterator;
 import java.util.Optional;
 import java.util.Set;
 
@@ -17,10 +15,10 @@ public class ProductChain implements ICheckoutChain<CheckoutBasicDto>{
 
     private ICheckoutChain<CheckoutBasicDto> validator;
 
-    private IProducts products;
+    private IProductRepository products;
     private IVerifyContent verifyContent;
 
-    public ProductChain(IProducts products, IVerifyContent verifyContent) {
+    public ProductChain(IProductRepository products, IVerifyContent verifyContent) {
         this.products = products;
         this.verifyContent = verifyContent;
     }
@@ -44,12 +42,7 @@ public class ProductChain implements ICheckoutChain<CheckoutBasicDto>{
               result = false;
               //break;
           }
-          if(item.getPrice() < newProduct.get().getPrice()) {
-                verifyContent.verifyBadRequest(true,
-                        "Check the price for the product with id " + id);
-                result = false;
-                //break;
-          }
+          item.setPrice(newProduct.get().getPrice());
 
         }
         if (validator != null) {

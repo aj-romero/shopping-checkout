@@ -17,12 +17,15 @@ import static org.hamcrest.MatcherAssert.*;
 class IProductTest {
 
     @Autowired
-    private IProducts products;
+    private IProductRepository products;
 
     @Test
     void whenNewProduct_thenSuccess() {
-        Product product = new Product("101","Mouse",100,11.45);
-       // product.setId(null);
+        Product product = new Product();
+        product.setName("USB 32GB");
+        product.setCode("101");
+        product.setStock(100);
+        product.setPrice(4.75);
 
         Product expect = products.save(product);
 

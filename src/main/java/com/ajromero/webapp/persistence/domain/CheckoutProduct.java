@@ -1,16 +1,19 @@
 package com.ajromero.webapp.persistence.domain;
 
 import com.ajromero.common.persistence.IEntity;
+import com.ajromero.webapp.payment.CalcTotalEntity;
+import com.ajromero.webapp.web.utils.ICalcTotal;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Objects;
+
 @Entity
 @Table(name = "checkout__products")
 @Getter
 @Setter
-@NoArgsConstructor
 public class CheckoutProduct implements IEntity, Comparable<CheckoutProduct> {
 
     @Id
@@ -27,18 +30,22 @@ public class CheckoutProduct implements IEntity, Comparable<CheckoutProduct> {
     @JoinColumn(name = "id_product", nullable = false)
     private Product product;
 
-    @Override
-    public String toString() {
-        return "CheckoutProduct (" +
-                "id=" + id +
-                ", quantity=" + quantity +
-                ", price=" + price +
-                ')';
-    }
 
-    @ManyToOne(fetch = FetchType.LAZY)
+
+    @ManyToOne
     @JoinColumn(name = "id_checkout", nullable = false)
     private Checkout checkout;
+
+    @Transient
+    private ICalcTotal<CheckoutProduct> total;
+
+    public CheckoutProduct() {
+        total = new CalcTotalEntity();
+    }
+
+    public Double getTotal() {
+        return this.total.calculateTotal(this);
+    }
 
     @Override
     public int compareTo(CheckoutProduct o) {
@@ -50,5 +57,28 @@ public class CheckoutProduct implements IEntity, Comparable<CheckoutProduct> {
         if (newQuantity >= 1) {
             this.quantity = newQuantity;
         }
+    }
+
+    @Override
+    public String toString() {
+        return "CheckoutProduct (" +
+                "id=" + id +
+                ", quantity=" + quantity +
+                ", price=" + price +
+                ')';
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        CheckoutProduct that = (CheckoutProduct) o;
+        return this.getProduct().getId().equals(that.getProduct().getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return this.getProduct().getId().hashCode() + 43;
     }
 }

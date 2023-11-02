@@ -1,11 +1,10 @@
 package com.ajromero.webapp.web.validation.checkout;
 
-import com.ajromero.webapp.persistence.repositories.ICustomers;
-import com.ajromero.webapp.persistence.repositories.IProducts;
+import com.ajromero.webapp.persistence.repositories.ICustomerRepository;
+import com.ajromero.webapp.persistence.repositories.IProductRepository;
 import com.ajromero.webapp.web.dto.CheckoutBasicDto;
 import com.ajromero.webapp.web.dto.CheckoutProductDto;
 import com.ajromero.webapp.web.validation.IVerifyContent;
-import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
 
@@ -17,7 +16,7 @@ public class CheckoutValidator {
     private final ICheckoutChain<CheckoutBasicDto> checkoutBasicChain;
     private final ICheckoutChain<CheckoutProductDto> addProductChain;
 
-    public CheckoutValidator(ICustomers customerRepository, IProducts productsRepository, IVerifyContent verifyContent) {
+    public CheckoutValidator(ICustomerRepository customerRepository, IProductRepository productsRepository, IVerifyContent verifyContent) {
         productChain = new ProductChain(productsRepository, verifyContent);
         checkoutBasicChain = new CheckoutBasicChain(customerRepository);
         addProductChain = new AddProductChain(productsRepository, verifyContent);

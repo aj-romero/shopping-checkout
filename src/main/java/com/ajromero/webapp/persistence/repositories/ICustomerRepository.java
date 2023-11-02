@@ -2,8 +2,10 @@ package com.ajromero.webapp.persistence.repositories;
 
 import com.ajromero.webapp.persistence.domain.Customer;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-public interface ICustomers extends JpaRepository<Customer,String> {
+@Repository
+public interface ICustomerRepository extends JpaRepository<Customer,String> {
 
     boolean existsByEmail(String email);
 }

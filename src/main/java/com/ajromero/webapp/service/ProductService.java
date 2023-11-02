@@ -1,11 +1,12 @@
 package com.ajromero.webapp.service;
 
 import com.ajromero.webapp.persistence.domain.Product;
-import com.ajromero.webapp.persistence.repositories.IProducts;
+import com.ajromero.webapp.persistence.repositories.IProductRepository;
 import com.ajromero.webapp.service.interfaces.IProductService;
 import com.ajromero.webapp.web.validation.IVerifyContent;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -13,8 +14,9 @@ import java.util.Optional;
 
 @Service
 @AllArgsConstructor
+@Transactional (readOnly = true)
 public class ProductService implements IProductService {
-    private final IProducts products;
+    private final IProductRepository products;
 
     private final IVerifyContent verifyContent;
 

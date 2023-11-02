@@ -11,9 +11,11 @@ public interface CheckoutProductMapper {
 
     CheckoutProduct checkoutProduct = Mappers.getMapper(CheckoutProduct.class);
 
+    @Mapping(target = "total", ignore = true)
     @Mapping(target = "idProduct", source = "product.id")
     CheckoutProductDto toDto(CheckoutProduct entity);
 
+    @Mapping(target = "total", ignore = true)
     @Mapping( target = "product.id", source = "idProduct")
     CheckoutProduct toEntity(CheckoutProductDto dto);
 }

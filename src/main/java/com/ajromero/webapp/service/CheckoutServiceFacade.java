@@ -1,32 +1,31 @@
 package com.ajromero.webapp.service;
 
-import com.ajromero.webapp.persistence.domain.Checkout;
-import com.ajromero.webapp.persistence.domain.CheckoutProduct;
-import com.ajromero.webapp.persistence.domain.Customer;
-import com.ajromero.webapp.persistence.repositories.ICheckout;
-import com.ajromero.webapp.persistence.repositories.ICustomers;
-import com.ajromero.webapp.persistence.repositories.IProducts;
+import com.ajromero.webapp.persistence.domain.*;
+import com.ajromero.webapp.persistence.repositories.*;
 import com.ajromero.webapp.web.dto.CheckoutBasicDto;
 import com.ajromero.webapp.web.dto.CheckoutProductDto;
+import com.ajromero.webapp.web.dto.CheckoutShippingDto;
 import com.ajromero.webapp.web.mapper.CheckoutBasicMapper;
 import com.ajromero.webapp.web.mapper.CheckoutProductMapper;
+import com.ajromero.webapp.web.mapper.CheckoutShippingMapper;
 import com.ajromero.webapp.web.validation.IVerifyContent;
 import com.ajromero.webapp.web.validation.checkout.CheckoutValidator;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
-import java.util.TreeSet;
-
 @Component
 @AllArgsConstructor
 public class CheckoutServiceFacade {
 
-    private final ICustomers customers;
+    private final ICustomerRepository customers;
     private final CheckoutBasicMapper ckMapper;
-    private final IProducts products;
+    private final CheckoutShippingMapper ckShippingMapper;
+    private final IProductRepository products;
     private final IVerifyContent verifyContent;
     private final CheckoutProductMapper ckProductMapper;
+    private final ICheckoutProductRepository ckProductRepository;
+    private final ICustomerAddressRepository addressesRepository;
 
     private CheckoutValidator basicValidator;
 
@@ -45,19 +44,19 @@ public class CheckoutServiceFacade {
         return checkout;
     }
 
-    public CheckoutProduct addProduct(Long id, CheckoutProductDto productDto, ICheckout checkouts) {
+    public CheckoutProduct addProduct(Long id, CheckoutProductDto productDto, ICheckoutRepository checkouts) {
         verifyContent.verifyBadRequest(!checkouts.existsById(id),id + " id URI not found in checkouts");
-        boolean valid = basicValidator.validateProduct(productDto);
-        CheckoutProduct newProduct = null;
+        basicValidator.validateProduct(productDto);
+        /*CheckoutProduct newProduct = ckProductMapper.toEntity(productDto);
 
         if (valid) {
             newProduct = ckProductMapper.toEntity(productDto);
-        }
+        }*/
 
-        return newProduct;
+        return ckProductMapper.toEntity(productDto);
     }
 
-    public Checkout updateProductQuantity(Long id, Long idProduct, Integer qty, ICheckout checkouts) {
+    public Checkout updateProductQuantity(Long id, Long idProduct, Integer qty, ICheckoutRepository checkouts) {
         verifyContent.verifyBadRequest(!checkouts.existsById(id),id + " id URI not found in checkouts");
         Checkout checkout = checkouts.findById(id).orElseThrow();
         boolean idExistsInCk = checkout.getProducts().stream().
@@ -83,19 +82,59 @@ public class CheckoutServiceFacade {
         return SecurityContextHolder.getContext().getAuthentication().getName();
     }
 
-    public void removeCheckoutProduct(Long id, Long idProduct, ICheckout checkouts) {
+    public Checkout removeCheckoutProduct(Long id, Long idProduct, ICheckoutRepository checkouts) {
         verifyContent.verifyBadRequest(!checkouts.existsById(id),id + " id URI not found in checkouts");
         Checkout checkout = checkouts.findById(id).orElseThrow();
         boolean idExistsInCk = checkout.getProducts().stream().
                 anyMatch(item -> item.getProduct().getId().equals(idProduct));
         verifyContent.verifyContent(!idExistsInCk, "Product with id "+idProduct+" no found in checkout");
+
         CheckoutProduct rmProduct = checkout.getProducts().stream()
                 .filter(detail -> detail.getProduct().getId().equals(idProduct))
                 .findFirst().orElseThrow();
-        checkout.getProducts().remove(rmProduct);
-        checkouts.save(checkout);
-        if (checkout.getProducts().isEmpty()) {
-            checkouts.delete(checkout);
-        }
+
+        checkout.subtractDetail(rmProduct);
+        ckProductRepository.delete(rmProduct);
+
+        return checkout;
     }
+
+    public CheckoutShippingDto saveShippingAddress(Long id, Long idAddress, ICheckoutRepository checkouts) {
+        verifyContent.verifyBadRequest(!checkouts.existsById(id),id + " id URI not found in checkouts");
+        verifyContent.verifyBadRequest(!addressesRepository.existsById(idAddress),
+                id + " id URI not found in Customer Addresses");
+        CustomerAddress address = addressesRepository.findById(idAddress).orElseThrow();
+
+        Checkout checkout = checkouts.findById(id).orElseThrow();
+        /*verifyContent.verifyBadRequest(checkout.getOrderShipping()!=null,
+                " can not add more than one address for shipping");*/
+        /*OrderShipping orderShipping = new OrderShipping();
+        orderShipping.setAddress(address);*/
+        //orderShipping.setCheckout(checkout);
+
+        checkout.setShippingAddress(address);
+
+        return ckShippingMapper.toDto(checkouts.save(checkout));
+    }
+
+    public CheckoutShippingDto updateShippingAddress(Long id, Long idAddress, ICheckoutRepository checkouts) {
+        verifyContent.verifyBadRequest(!checkouts.existsById(id),id + " id URI not found in checkouts");
+        verifyContent.verifyBadRequest(!addressesRepository.existsById(idAddress),
+                id + " id URI not found in Customer Addresses");
+        CustomerAddress address = addressesRepository.findById(idAddress).orElseThrow();
+
+        Checkout checkout = checkouts.findById(id).orElseThrow();
+        checkout.setShippingAddress(address);
+        /*verifyContent.verifyBadRequest(checkout.getOrderShipping() == null,
+                " save an address first");
+        OrderShipping orderShipping = checkout.getOrderShipping();
+        orderShipping.setAddress(address);*/
+        //orderShipping.setCheckout(checkout);
+
+        //checkout.setOrderShipping(orderShipping);
+
+       // return ckShippingMapper.toDto(checkouts.save(checkout));
+        return ckShippingMapper.toDto(checkout);
+    }
+
 }

@@ -1,6 +1,8 @@
 package com.ajromero.webapp.persistence.domain;
 
 import com.ajromero.common.persistence.IEntity;
+import com.ajromero.webapp.payment.IPaymentProcessor;
+import com.ajromero.webapp.web.dto.CheckoutProductDto;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -23,8 +25,9 @@ public class Checkout implements IEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String payment;
+    private String paymentCode;
 
+    @Column(name = "ck_status")
     @Enumerated(EnumType.STRING)
     private Status status;
 
@@ -39,18 +42,34 @@ public class Checkout implements IEntity {
     private Customer customer;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_address_billing")
-    private CustomerAddress addressBilling;
+    @JoinColumn(name = "id_shipping_address")
+    private CustomerAddress shippingAddress;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_payment")
-    private PaymentMethod paymentMethod;
+    private CardPayment cardPayment;
 
     @OneToMany(mappedBy = "checkout", cascade = CascadeType.ALL)
     private Set<CheckoutProduct> products;
 
-    @OneToOne(mappedBy = "checkout", cascade = CascadeType.ALL)
-    private OrderShipping orderShipping;
+
+
+    @Transient
+    private IPaymentProcessor paymentProcessor;
+
+    public IPaymentProcessor getPaymentProcessor() {
+        return paymentProcessor;
+    }
+
+    public void setPaymentProcessor(IPaymentProcessor paymentProcessor) {
+        this.paymentProcessor = paymentProcessor;
+        this.paymentCode = paymentProcessor.pay(this);
+    }
+
+
+    public double getTotalCheckout() {
+        return this.products.stream().mapToDouble(CheckoutProduct::getTotal).sum();
+    }
 
     public void addDetail(CheckoutProduct detail){
         if(this.products == null) {
@@ -58,6 +77,13 @@ public class Checkout implements IEntity {
         }
         detail.setCheckout(this);
         products.add(detail);
+    }
+
+    public void subtractDetail(CheckoutProduct detail){
+        if (this.products != null) {
+            detail.setCheckout(this);
+            products.remove(detail);
+        }
     }
 
     public enum Status {
@@ -74,6 +100,5 @@ public class Checkout implements IEntity {
     protected void preUpdate() {
         this.updatedAt = new Date();
     }
-
 
 }
