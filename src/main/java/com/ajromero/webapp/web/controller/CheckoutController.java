@@ -66,5 +66,12 @@ public class CheckoutController {
         return new ResponseEntity<>(checkoutService.updateShippingAddress(id,idCustomerAddress), HttpStatus.OK);
     }
 
+    @PostMapping("/{id}/cardPayment/{idCustomerCard}")
+    public ResponseEntity<String> savePaymentMethod(
+            @PathVariable("id") final @Positive Long id,
+            @PathVariable("idCustomerCard") final @Positive Long idCustomerCard) {
+        return new ResponseEntity<>(checkoutService.savePaymentMethod(id,idCustomerCard), HttpStatus.CREATED);
+    }
+
 
 }

@@ -19,4 +19,5 @@ public interface ICheckoutService {
 
     CheckoutShippingDto updateShippingAddress(Long id, Long idCustomerAddress);
 
+    String savePaymentMethod(Long id, Long idCustomerCard);
 }

@@ -33,7 +33,7 @@ public class CheckoutService implements ICheckoutService {
     @Override
     @Transactional
     public CheckoutBasicDto addProduct(Long id, CheckoutProductDto product) {
-        CheckoutProduct newProduct = facade.addProduct(id, product,checkouts);
+        CheckoutProduct newProduct = facade.addProduct(id, product);
         Checkout checkout = checkouts.findById(id).orElseThrow();
         checkout.addDetail(newProduct);
         Checkout result = checkouts.save(checkout);
@@ -50,7 +50,7 @@ public class CheckoutService implements ICheckoutService {
     @Override
     @Transactional
     public void deleteCheckoutProduct(Long id, Long idProduct) {
-        Checkout checkout = facade.removeCheckoutProduct(id, idProduct, checkouts);
+        Checkout checkout = facade.removeCheckoutProduct(id, idProduct);
 
         if (checkout.getProducts().isEmpty() &&
                 checkout.getStatus().equals(Checkout.Status.OPEN)) {
@@ -68,6 +68,12 @@ public class CheckoutService implements ICheckoutService {
     @Transactional
     public CheckoutShippingDto updateShippingAddress(Long id, Long idCustomerAddress) {
         return facade.updateShippingAddress(id,idCustomerAddress,checkouts);
+    }
+
+    @Override
+    @Transactional
+    public String savePaymentMethod(Long id, Long idCustomerCard) {
+        return facade.setPaymentMethod(id,idCustomerCard);
     }
 
 
