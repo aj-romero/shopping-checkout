@@ -1,13 +1,9 @@
 package com.ajromero.webapp.web.controller;
 
 import com.ajromero.webapp.service.interfaces.ICheckoutService;
-import com.ajromero.webapp.web.dto.CCheckoutDto;
-import com.ajromero.webapp.web.dto.CheckoutBasicDto;
-import com.ajromero.webapp.web.dto.CheckoutProductDto;
-import com.ajromero.webapp.web.dto.CheckoutShippingDto;
+import com.ajromero.webapp.web.dto.*;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.DecimalMin;
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -35,12 +31,11 @@ public class CheckoutController {
         return new ResponseEntity<>(checkoutService.addProduct(id,product), HttpStatus.CREATED);
     }
 
-    @PutMapping("/{id}/products/{idProduct}")
+    @PutMapping("/{id}/products")
     public ResponseEntity<CheckoutBasicDto> updateQuantityProduct(
             @PathVariable("id") final @Positive Long id,
-            @PathVariable("idProduct") final @Positive Long idProduct,
-            @RequestBody @DecimalMin(value =  "-9999") final Integer quantity) {
-        return new ResponseEntity<>(checkoutService.updateQuantityProduct(id,idProduct,quantity), HttpStatus.OK);
+            @RequestBody @Valid final CheckoutProductDto product) {
+        return new ResponseEntity<>(checkoutService.updateQuantityProduct(id,product), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}/products/{idProduct}")
@@ -49,29 +44,43 @@ public class CheckoutController {
             @PathVariable("id") final @Positive Long id,
             @PathVariable("idProduct") final @Positive Long idProduct) {
         checkoutService.deleteCheckoutProduct(id,idProduct);
-        //return new ResponseEntity<>(checkoutService.deleteCheckoutProduct(id,idProduct), HttpStatus.CREATED);
     }
 
-    @PostMapping("/{id}/shippingAddress/{idCustomerAddress}")
-    public ResponseEntity<CheckoutShippingDto> saveShippingAddress(
+    @PostMapping("/{id}/shippingAddress")
+    public ResponseEntity<CheckoutWithShippingDto> saveShippingAddress(
             @PathVariable("id") final @Positive Long id,
-            @PathVariable("idCustomerAddress") final @Positive Long idCustomerAddress) {
-        return new ResponseEntity<>(checkoutService.saveShippingAddress(id,idCustomerAddress), HttpStatus.CREATED);
+            @RequestBody @Valid final ShippingDto resource) {
+        return new ResponseEntity<>(checkoutService.saveShippingAddress(id,resource), HttpStatus.CREATED);
     }
 
-    @PutMapping("/{id}/shippingAddress/{idCustomerAddress}")
-    public ResponseEntity<CheckoutShippingDto> updateShippingAddress(
+    @PutMapping("/{id}/shippingAddress")
+    public ResponseEntity<CheckoutWithShippingDto> updateShippingAddress(
             @PathVariable("id") final @Positive Long id,
-            @PathVariable("idCustomerAddress") final @Positive Long idCustomerAddress) {
-        return new ResponseEntity<>(checkoutService.updateShippingAddress(id,idCustomerAddress), HttpStatus.OK);
+            @RequestBody @Valid final ShippingDto resource) {
+        return new ResponseEntity<>(checkoutService.updateShippingAddress(id,resource), HttpStatus.OK);
     }
 
-    @PostMapping("/{id}/cardPayment/{idCustomerCard}")
+    @PostMapping("/{id}/cardPayment")
     public ResponseEntity<String> savePaymentMethod(
             @PathVariable("id") final @Positive Long id,
-            @PathVariable("idCustomerCard") final @Positive Long idCustomerCard) {
-        return new ResponseEntity<>(checkoutService.savePaymentMethod(id,idCustomerCard), HttpStatus.CREATED);
+            @RequestBody @Valid final CheckoutPaymentDto resource) {
+        return new ResponseEntity<>(checkoutService.savePaymentMethod(id,resource), HttpStatus.CREATED);
     }
+
+    @PutMapping("/{id}/cardPayment")
+    public ResponseEntity<String> updatePaymentMethod(
+            @PathVariable("id") final @Positive Long id,
+            @RequestBody @Valid final CheckoutPaymentDto resource) {
+        return new ResponseEntity<>(checkoutService.updatePaymentMethod(id,resource), HttpStatus.OK);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<CheckoutInfoDto> getCheckout(
+            @PathVariable("id") final @Positive Long id) {
+        return new ResponseEntity<>(checkoutService.getCheckoutInfo(id), HttpStatus.OK);
+    }
+
+
 
 
 }

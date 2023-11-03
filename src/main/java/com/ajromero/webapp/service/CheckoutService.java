@@ -4,9 +4,7 @@ import com.ajromero.webapp.persistence.domain.Checkout;
 import com.ajromero.webapp.persistence.domain.CheckoutProduct;
 import com.ajromero.webapp.persistence.repositories.ICheckoutRepository;
 import com.ajromero.webapp.service.interfaces.ICheckoutService;
-import com.ajromero.webapp.web.dto.CheckoutBasicDto;
-import com.ajromero.webapp.web.dto.CheckoutProductDto;
-import com.ajromero.webapp.web.dto.CheckoutShippingDto;
+import com.ajromero.webapp.web.dto.*;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,8 +39,8 @@ public class CheckoutService implements ICheckoutService {
     }
 
     @Override
-    public CheckoutBasicDto updateQuantityProduct(Long id, Long idProduct, Integer quantity) {
-        Checkout updateCheckout = facade.updateProductQuantity(id, idProduct,quantity,checkouts);
+    public CheckoutBasicDto updateQuantityProduct(Long id, CheckoutProductDto product) {
+        Checkout updateCheckout = facade.updateProductQuantity(id, product);
         Checkout result = checkouts.save(updateCheckout);
         return facade.toDto(result);
     }
@@ -60,21 +58,30 @@ public class CheckoutService implements ICheckoutService {
 
     @Override
     @Transactional
-    public CheckoutShippingDto saveShippingAddress(Long id, Long idCustomerAddress) {
-        return facade.saveShippingAddress(id,idCustomerAddress,checkouts);
+    public CheckoutWithShippingDto saveShippingAddress(Long id, ShippingDto resource) {
+        return facade.saveShippingAddress(id,resource);
     }
 
     @Override
     @Transactional
-    public CheckoutShippingDto updateShippingAddress(Long id, Long idCustomerAddress) {
-        return facade.updateShippingAddress(id,idCustomerAddress,checkouts);
+    public CheckoutWithShippingDto updateShippingAddress(Long id, ShippingDto resource) {
+        return facade.updateShippingAddress(id,resource);
     }
 
     @Override
     @Transactional
-    public String savePaymentMethod(Long id, Long idCustomerCard) {
-        return facade.setPaymentMethod(id,idCustomerCard);
+    public String savePaymentMethod(Long id, CheckoutPaymentDto resource) {
+        return facade.setPaymentMethod(id,resource);
     }
 
+    @Override
+    @Transactional
+    public String updatePaymentMethod(Long id, CheckoutPaymentDto resource) {
+        return facade.updatePaymentMethod(id,resource);
+    }
 
+    @Override
+    public CheckoutInfoDto getCheckoutInfo(Long id) {
+        return facade.getCheckoutInformation(id);
+    }
 }

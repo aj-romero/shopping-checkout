@@ -19,7 +19,6 @@ public class CheckoutProductDto implements IDto,Comparable<CheckoutProductDto> {
     @NotNull(message = "is required")
     @Getter @Setter private Long idProduct;
 
-    @Min(value = 1, message = "should not be less than 1")
     @NotNull(message = "is required")
     @Getter @Setter private Integer quantity;
 

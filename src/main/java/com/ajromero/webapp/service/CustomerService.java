@@ -77,15 +77,7 @@ public class CustomerService implements ICustomerService {
             customer.setEmail(resource.getEmail());
             customer.setPhone(resource.getPhone());
         });
-        /*
 
-
-
-        Customer customer = customerMapper.toEntity(resource);
-
-
-
-        customer.setId(userId);*/
         return customerMapper.toDto(dbCustomer.orElseThrow());
     }
 
@@ -93,13 +85,4 @@ public class CustomerService implements ICustomerService {
         return SecurityContextHolder.getContext().getAuthentication().getName();
     }
 
-    /*@Override
-    public void simpleNew() {
-        String id = this.getUserId();
-        Customer newCustomer = new Customer();
-        newCustomer.setId(id);
-        if(customers.findById(id).isEmpty()){
-            customers.save(newCustomer);
-        }
-    }*/
 }
