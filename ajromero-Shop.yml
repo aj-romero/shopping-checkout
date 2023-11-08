@@ -20,10 +20,12 @@ services:
       KEYCLOAK_DATABASE_SCHEMA: public
       KEYCLOAK_ADMIN_USER: ${KEYCLOAK_ADMIN_USERNAME}
       KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
+      # keycloak.ssl-required: none
     depends_on:
       - keycloakdb
     links:
       - keycloakdb
+      # - application
     ports:
       - "8082:8080"
 
@@ -49,3 +51,14 @@ services:
       - 8081:80
     links:
       - mysql_db
+  
+  application:
+    build: .
+    ports:
+      - 9000:9000
+    links:
+      - keycloak
+    environment:
+      MYSQL_HOST: mysql_db
+      OAUTH_HOST: keycloak
+      KC_PORT: 8080
