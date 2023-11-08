@@ -1,0 +1,64 @@
+services:
+  keycloakdb:
+    image: ${KEYCLOAK_POSTGRES_IMAGE_TAG}
+    volumes:
+      - ./db_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: ${KEYCLOAK_DB_NAME}
+      POSTGRES_USER: ${KEYCLOAK_DB_USER}
+      POSTGRES_PASSWORD: ${KEYCLOAK_DB_PASSWORD}
+
+  keycloak:
+    image: ${KEYCLOAK_IMAGE_TAG}
+    environment:
+      KEYCLOAK_DATABASE_VENDOR: ${KEYCLOAK_DB_TYPE}
+      KEYCLOAK_DATABASE_HOST: keycloakdb
+      KEYCLOAK_DATABASE_PORT: 5432
+      KEYCLOAK_DATABASE_NAME: ${KEYCLOAK_DB_NAME}
+      KEYCLOAK_DATABASE_USER: ${KEYCLOAK_DB_USER}
+      KEYCLOAK_DATABASE_PASSWORD: ${KEYCLOAK_DB_PASSWORD}
+      KEYCLOAK_DATABASE_SCHEMA: public
+      KEYCLOAK_ADMIN_USER: ${KEYCLOAK_ADMIN_USERNAME}
+      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
+      # keycloak.ssl-required: none
+    depends_on:
+      - keycloakdb
+    links:
+      - keycloakdb
+      # - application
+    ports:
+      - "8082:8080"
+
+  mysql_db:
+    image: mysql:latest
+    volumes:
+      - ./restapi-db:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: "p4swrd-checkout"
+      MYSQL_DATABASE: "shoppingCheckout"
+      MYSQL_USER: usershopping
+      MYSQL_PASSWORD: us3rSh0p
+
+  phpmyadmin_db:
+    image: phpmyadmin/phpmyadmin
+    environment:
+      PMA_HOST: mysql_db
+      PMA_PORT: 3306
+    restart: always
+    ports:
+      - 8081:80
+    links:
+      - mysql_db
+  
+  application:
+    build: .
+    ports:
+      - 9000:9000
+    links:
+      - keycloak
+    environment:
+      MYSQL_HOST: mysql_db
+      OAUTH_HOST: keycloak
+      KC_PORT: 8080
