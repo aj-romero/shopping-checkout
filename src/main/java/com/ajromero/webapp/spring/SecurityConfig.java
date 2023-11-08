@@ -14,9 +14,6 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(authz -> authz
                 .requestMatchers("/actuator/health").permitAll()
-                .requestMatchers("/swagger-ui/**","/v3/api-docs/**").permitAll()
-                .requestMatchers("/products").permitAll()
-                //.requestMatchers(HttpMethod.POST,"/customers","/customers/**").permitAll()
                 .anyRequest().authenticated());
 
         http.oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()));
