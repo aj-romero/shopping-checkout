@@ -1,0 +1,45 @@
+package com.ajromero.webapp.web.controller;
+
+import com.ajromero.webapp.service.interfaces.IAddressService;
+import com.ajromero.webapp.web.dto.AddressDto;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Positive;
+import java.util.List;
+import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+
+@RestController
+@RequestMapping("addresses")
+@AllArgsConstructor
+@Validated
+public class CustomerAddressController {
+
+    private final IAddressService addressService;
+
+    @GetMapping
+    public ResponseEntity<List<AddressDto>> getCustomerAddresses() {
+        return ResponseEntity.ok().body(addressService.findAll());
+    }
+
+    @PostMapping
+    public ResponseEntity<AddressDto> saveAddress(@RequestBody @Valid final AddressDto address) {
+        return new ResponseEntity<>(addressService.save(address), HttpStatus.CREATED);
+    }
+
+    @PutMapping(path = "/{id}")
+    public ResponseEntity<AddressDto> updateAddress(@PathVariable("id")
+                                                        final @Positive Long id,
+                                                    @RequestBody @Valid final AddressDto address) {
+        return new ResponseEntity<>(addressService.update(id,address), HttpStatus.OK);
+    }
+}
