@@ -8,15 +8,17 @@ import com.ajromero.webapp.service.interfaces.IAddressService;
 import com.ajromero.webapp.web.dto.AddressDto;
 import com.ajromero.webapp.web.mapper.AddressMapper;
 import com.ajromero.webapp.web.validation.IVerifyContent;
+import java.util.List;
+import java.util.Optional;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Optional;
 
 @Service
+@Slf4j
 @AllArgsConstructor
 @Transactional (readOnly = true)
 public class AddressService implements IAddressService {
@@ -25,7 +27,7 @@ public class AddressService implements IAddressService {
     private final IVerifyContent verifyContent;
     private final AddressMapper addressMapper;
 
-    private String getUserId(){
+    private String getUserId() {
         return SecurityContextHolder.getContext().getAuthentication().getName();
     }
 
@@ -37,13 +39,14 @@ public class AddressService implements IAddressService {
         verifyContent.verifyContent(customer.isEmpty(),"Error customer no found");
         CustomerAddress address = addressMapper.toEntity(resource);
         address.setCustomer(customer.orElseThrow());
+        log.info("{} Service >> saving", getClass());
         return addressMapper.toDto(addresses.save(address));
     }
 
     @Override
     @Transactional
     public AddressDto update(Long id, AddressDto resource) {
-        verifyContent.verifyBadRequest(resource.getId()==null,
+        verifyContent.verifyBadRequest(resource.getId() == null,
                 "Id is required");
         verifyContent.verifyBadRequest(!id.equals(resource.getId()),
                 "id and URI id don't match");
@@ -57,6 +60,7 @@ public class AddressService implements IAddressService {
         address.setCustomer(customer.orElseThrow());
 
         CustomerAddress result = addresses.save(address);
+        log.info("{} Service >> updating", getClass());
         return addressMapper.toDto(result);
     }
 
@@ -65,7 +69,8 @@ public class AddressService implements IAddressService {
     public List<AddressDto> findAll() {
         String userId = getUserId();
         Customer actual = customers.findById(userId).orElseThrow();
-        List<AddressDto> list = addresses.findByCustomer(actual).stream().map(addressMapper::toDto).toList();
+        List<AddressDto> list = addresses.findByCustomer(actual)
+                .stream().map(addressMapper::toDto).toList();
         verifyContent.verifyContent(list.isEmpty(), "No addresses found");
         return list;
     }

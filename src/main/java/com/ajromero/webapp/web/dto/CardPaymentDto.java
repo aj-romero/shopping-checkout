@@ -16,7 +16,8 @@ public class CardPaymentDto implements IDto {
     private String expirationDate;
 
     public String getCardNumber() {
-        return "**"+cardNumber.substring(this.cardNumber.length()-4);
+        return "**" + cardNumber
+                .substring(this.cardNumber.length() - 4);
     }
 
 }

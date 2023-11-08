@@ -15,14 +15,15 @@ spring:
       ddl-auto: none
     properties:
       hibernate:
-    show-sql: 'true'
+    show-sql: 'false'
 #        dialect: org.hibernate.dialect.MySQLDialect
   security:
     oauth2:
       resourceserver:
         jwt:
-          jwk-set-uri: http://localhost:8082/realms/ajromero/protocol/openid-connect/certs
+          jwk-set-uri: http://${OAUTH_HOST:localhost}:${KC_PORT:8082}/realms/ajromero/protocol/openid-connect/certs
           issuer-uri: http://localhost:8082/realms/ajromero
+#          issuer-uri: http://${OAUTH_HOST:localhost}:${KC_PORT:8082}/realms/ajromero
 server:
     port: '9000'
     servlet:

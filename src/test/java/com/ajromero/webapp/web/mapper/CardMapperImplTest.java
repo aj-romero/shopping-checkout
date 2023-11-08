@@ -5,6 +5,8 @@ import com.ajromero.webapp.persistence.domain.Customer;
 import com.ajromero.webapp.web.dto.CCheckoutDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -31,7 +33,8 @@ class CardMapperImplTest {
         // Run the test
         final CCheckoutDto result = cardMapperImplUnderTest.toDto(card);
 
-        // Verify the results
+        assertThat(result.getCardHoldername(),is(equalTo(card.getCardHoldername())));
+
     }
 
     @Test

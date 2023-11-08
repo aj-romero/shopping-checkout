@@ -6,7 +6,12 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 
 @RestController
@@ -17,8 +22,10 @@ public class CustomerController {
     private final ICustomerService customerService;
 
     @PostMapping
-    public ResponseEntity<CustomerDto> saveCustomer(@RequestBody @Valid final CustomerDto customer) {
-        return new ResponseEntity<>(customerService.save(customer), HttpStatus.CREATED);
+    public ResponseEntity<CustomerDto> saveCustomer(
+            @RequestBody @Valid final CustomerDto customer) {
+        return new ResponseEntity<>(customerService
+                .save(customer), HttpStatus.CREATED);
     }
 
     @GetMapping
@@ -27,8 +34,10 @@ public class CustomerController {
     }
 
     @PutMapping
-    public ResponseEntity<CustomerDto> updateCustomer(@RequestBody @Valid final CustomerDto customer) {
-        return new ResponseEntity<>(customerService.update(customer), HttpStatus.OK);
+    public ResponseEntity<CustomerDto> updateCustomer(
+            @RequestBody @Valid final CustomerDto customer) {
+        return new ResponseEntity<>(customerService
+                .update(customer), HttpStatus.OK);
     }
 
 }

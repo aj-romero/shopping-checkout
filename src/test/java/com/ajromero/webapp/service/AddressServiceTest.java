@@ -17,12 +17,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import javax.swing.text.html.Option;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.*;
 import static org.mockito.Mockito.*;
@@ -67,7 +65,6 @@ class AddressServiceTest {
         String userId = getUserAuth();
         Customer user = new Customer();
         AddressDto dtoAddress = new AddressDto();
-        List<AddressDto> listAddress = new ArrayList<>();
         List<CustomerAddress> listCAddress = new ArrayList<>();
 
         when(customers.findById(anyString())).thenReturn(Optional.of(user));

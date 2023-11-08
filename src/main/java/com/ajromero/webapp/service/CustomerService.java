@@ -6,15 +6,16 @@ import com.ajromero.webapp.service.interfaces.ICustomerService;
 import com.ajromero.webapp.web.dto.CustomerDto;
 import com.ajromero.webapp.web.mapper.CustomerMapper;
 import com.ajromero.webapp.web.validation.IVerifyContent;
+import java.util.Optional;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Optional;
 
 @Service
+@Slf4j
 @AllArgsConstructor
 @Transactional (readOnly = true)
 public class CustomerService implements ICustomerService {
@@ -50,7 +51,7 @@ public class CustomerService implements ICustomerService {
         } else {
             newCustomer.setId(userId);
         }
-
+        log.info("{} Service >> saving", getClass());
         return customerMapper.toDto(customers.save(newCustomer));
     }
 
@@ -63,17 +64,18 @@ public class CustomerService implements ICustomerService {
                 dbCustomer.orElseThrow().getId().equals(userId),
                 "Customer no have privilege to update this information"
         );
-        dbCustomer.ifPresent((customer)->{
+        dbCustomer.ifPresent(customer -> {
             customer.setFirstName(resource.getFirstName());
             customer.setLastName(resource.getLastName());
             customer.setEmail(resource.getEmail());
             customer.setPhone(resource.getPhone());
         });
+        log.info("{} Service >> updating", getClass());
 
         return customerMapper.toDto(dbCustomer.orElseThrow());
     }
 
-    private String getUserId(){
+    private String getUserId() {
         return SecurityContextHolder.getContext().getAuthentication().getName();
     }
 

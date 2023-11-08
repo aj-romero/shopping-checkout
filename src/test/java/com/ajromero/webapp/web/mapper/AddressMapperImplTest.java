@@ -6,6 +6,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 class AddressMapperImplTest {
 
@@ -29,10 +31,9 @@ class AddressMapperImplTest {
         address.setHouseNumber("houseNumber");
         address.setReferenceName("referenceName");
 
-        // Run the test
         final AddressDto result = addressMapperImplUnderTest.toDto(address);
 
-        // Verify the results
+        assertThat(result.getId(),is(equalTo(address.getId())));
     }
 
     @Test

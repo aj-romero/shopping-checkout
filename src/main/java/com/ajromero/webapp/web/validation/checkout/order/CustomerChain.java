@@ -33,7 +33,7 @@ public class CustomerChain implements ICheckoutChain<Checkout> {
                     "Customer last name is required");
             result = false;
         }
-        if( validator != null) {
+        if (validator != null) {
             return this.validator.validate(resource);
         }
         return result;

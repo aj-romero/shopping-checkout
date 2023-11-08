@@ -9,11 +9,11 @@ import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
-public class VerifyContent implements IVerifyContent{
+public class VerifyContent implements IVerifyContent {
 
     @Override
     public void verifyContent(boolean resource, String msj) {
-        if(resource){
+        if (resource) {
             log.warn(msj);
             throw new ResourceNotFoundException(msj);
         }
@@ -21,15 +21,16 @@ public class VerifyContent implements IVerifyContent{
 
     @Override
     public void verifyEmail(ICustomerRepository customers, String email) {
-        if(customers.existsByEmail(email)) {
+        if (customers.existsByEmail(email)) {
             log.warn(email + " customer already exists with the given email account");
-            throw new EmailResourceException(email + " customer already exists with the given email account");
+            throw new EmailResourceException(email
+                    + " customer already exists with the given email account");
         }
     }
 
     @Override
     public void verifyBadRequest(boolean resource, String msj) {
-        if(resource){
+        if (resource) {
             log.warn(msj);
             throw new MyBadRequestException(msj);
         }

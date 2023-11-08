@@ -10,7 +10,9 @@ spring:
       ddl-auto: none
     properties:
       hibernate:
-    show-sql: 'true'
+    show-sql: 'false'
+  main:
+    banner-mode: 'OFF'
 #        dialect: org.hibernate.dialect.MySQLDialect
 server:
     port: '9001'

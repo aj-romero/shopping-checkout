@@ -1,6 +1,12 @@
 package com.ajromero.webapp.service.interfaces;
 
-import com.ajromero.webapp.web.dto.*;
+import com.ajromero.webapp.web.dto.CheckoutBasicDto;
+import com.ajromero.webapp.web.dto.CheckoutConfirmDto;
+import com.ajromero.webapp.web.dto.CheckoutInfoDto;
+import com.ajromero.webapp.web.dto.CheckoutPaymentDto;
+import com.ajromero.webapp.web.dto.CheckoutProductDto;
+import com.ajromero.webapp.web.dto.CheckoutWithShippingDto;
+import com.ajromero.webapp.web.dto.ShippingDto;
 
 public interface ICheckoutService {
 

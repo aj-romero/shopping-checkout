@@ -25,7 +25,9 @@ public class CheckoutValidator {
     private final ICheckoutChain<Checkout> paymentChain;
     private final ICheckoutChain<Checkout> totalOrderChain;
 
-    public CheckoutValidator(ICustomerRepository customerRepository, IProductRepository productsRepository, IVerifyContent verifyContent) {
+    public CheckoutValidator(ICustomerRepository customerRepository,
+                             IProductRepository productsRepository,
+                             IVerifyContent verifyContent) {
         productChain = new ProductChain(productsRepository, verifyContent);
         checkoutBasicChain = new CheckoutBasicChain(customerRepository);
         addProductChain = new AddProductChain(productsRepository, verifyContent);

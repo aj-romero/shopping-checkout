@@ -7,7 +7,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 @Component
-public class CheckoutBasicChain implements ICheckoutChain<CheckoutBasicDto>{
+public class CheckoutBasicChain implements ICheckoutChain<CheckoutBasicDto> {
 
     private ICheckoutChain<CheckoutBasicDto> validator;
     private ICustomerRepository customers;
@@ -19,14 +19,13 @@ public class CheckoutBasicChain implements ICheckoutChain<CheckoutBasicDto>{
     public CheckoutBasicChain() {
         //
     }
+
     @Override
     public Boolean validate(CheckoutBasicDto resource) {
         boolean result = true;
-        if(resource.getProducts().iterator().hasNext()){
+        if (resource.getProducts().iterator().hasNext()) {
             String idUser = SecurityContextHolder.getContext().getAuthentication().getName();
-            if (customers.existsById(idUser)){
-                result = true;
-            } else {
+            if (!customers.existsById(idUser)) {
                 Customer newCustomer = new Customer();
                 newCustomer.setId(idUser);
                 customers.save(newCustomer);
@@ -36,7 +35,7 @@ public class CheckoutBasicChain implements ICheckoutChain<CheckoutBasicDto>{
             result = false;
         }
 
-        if( validator != null) {
+        if (validator != null) {
             return this.validator.validate(resource);
         }
 

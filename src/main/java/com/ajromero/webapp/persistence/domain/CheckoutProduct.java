@@ -3,12 +3,18 @@ package com.ajromero.webapp.persistence.domain;
 import com.ajromero.common.persistence.IEntity;
 import com.ajromero.webapp.payment.CalcTotalEntity;
 import com.ajromero.webapp.web.utils.ICalcTotal;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.util.Objects;
 
 @Entity
 @Table(name = "checkout__products")
@@ -37,7 +43,7 @@ public class CheckoutProduct implements IEntity, Comparable<CheckoutProduct> {
     private Checkout checkout;
 
     @Transient
-    private ICalcTotal<CheckoutProduct> total;
+    private transient ICalcTotal<CheckoutProduct> total;
 
     public CheckoutProduct() {
         total = new CalcTotalEntity();
@@ -61,18 +67,22 @@ public class CheckoutProduct implements IEntity, Comparable<CheckoutProduct> {
 
     @Override
     public String toString() {
-        return "CheckoutProduct (" +
-                "id=" + id +
-                ", quantity=" + quantity +
-                ", price=" + price +
-                ')';
+        return "CheckoutProduct ("
+                + "id=" + id
+                + ", quantity=" + quantity
+                + ", price=" + price
+                + ')';
     }
 
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         CheckoutProduct that = (CheckoutProduct) o;
         return this.getProduct().getId().equals(that.getProduct().getId());
     }

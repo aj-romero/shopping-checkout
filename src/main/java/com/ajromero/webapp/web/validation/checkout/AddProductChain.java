@@ -4,7 +4,6 @@ import com.ajromero.webapp.persistence.domain.Product;
 import com.ajromero.webapp.persistence.repositories.IProductRepository;
 import com.ajromero.webapp.web.dto.CheckoutProductDto;
 import com.ajromero.webapp.web.validation.IVerifyContent;
-
 import java.util.Optional;
 
 public class AddProductChain implements ICheckoutChain<CheckoutProductDto> {
@@ -30,14 +29,16 @@ public class AddProductChain implements ICheckoutChain<CheckoutProductDto> {
                     "Product with id " + id + " no found");
             result = false;
 
-        }
-        if (newProduct.get().getStock() < resource.getQuantity()) {
-            verifyContent.verifyBadRequest(true,
-                    "Product with id " + id + " hasn't that quantity");
-            result = false;
+        } else {
+            if ((newProduct.get().getStock() < resource.getQuantity())) {
+                verifyContent.verifyBadRequest(true,
+                        "Product with id " + id + " hasn't that quantity");
+                result = false;
 
+            }
+            resource.setPrice(newProduct.get().getPrice());
         }
-        resource.setPrice(newProduct.get().getPrice());
+
 
 
         if (this.validator != null) {

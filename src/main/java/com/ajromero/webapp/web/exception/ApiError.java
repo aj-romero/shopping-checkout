@@ -1,11 +1,11 @@
 package com.ajromero.webapp.web.exception;
 
 
-import lombok.NoArgsConstructor;
-import org.springframework.http.HttpStatus;
 
 import java.util.HashMap;
 import java.util.Map;
+import lombok.NoArgsConstructor;
+import org.springframework.http.HttpStatus;
 
 @NoArgsConstructor
 public class ApiError {

@@ -2,19 +2,15 @@ package com.ajromero.webapp.web.mapper;
 
 import com.ajromero.webapp.persistence.domain.Checkout;
 import com.ajromero.webapp.persistence.domain.CheckoutProduct;
-import com.ajromero.webapp.persistence.domain.Product;
 import com.ajromero.webapp.web.dto.CheckoutBasicDto;
 import com.ajromero.webapp.web.dto.CheckoutProductDto;
+import java.util.Set;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.factory.Mappers;
 
-import java.util.Set;
 
 @Mapper(componentModel = "spring")
 public interface CheckoutBasicMapper {
-    CheckoutProduct checkoutProduct = Mappers.getMapper(CheckoutProduct.class);
-
 
     CheckoutBasicDto toDto(Checkout entity);
 

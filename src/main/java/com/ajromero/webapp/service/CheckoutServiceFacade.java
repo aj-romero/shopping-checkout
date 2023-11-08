@@ -1,14 +1,33 @@
 package com.ajromero.webapp.service;
 
 import com.ajromero.webapp.payment.CardProcessor;
-import com.ajromero.webapp.persistence.domain.*;
-import com.ajromero.webapp.persistence.repositories.*;
-import com.ajromero.webapp.web.dto.*;
-import com.ajromero.webapp.web.mapper.*;
+import com.ajromero.webapp.persistence.domain.CardPayment;
+import com.ajromero.webapp.persistence.domain.Checkout;
+import com.ajromero.webapp.persistence.domain.CheckoutProduct;
+import com.ajromero.webapp.persistence.domain.Customer;
+import com.ajromero.webapp.persistence.domain.CustomerAddress;
+import com.ajromero.webapp.persistence.repositories.ICardPaymentRepository;
+import com.ajromero.webapp.persistence.repositories.ICheckoutProductRepository;
+import com.ajromero.webapp.persistence.repositories.ICheckoutRepository;
+import com.ajromero.webapp.persistence.repositories.ICustomerAddressRepository;
+import com.ajromero.webapp.persistence.repositories.ICustomerRepository;
+import com.ajromero.webapp.persistence.repositories.IProductRepository;
+import com.ajromero.webapp.web.dto.CCheckoutDto;
+import com.ajromero.webapp.web.dto.CheckoutBasicDto;
+import com.ajromero.webapp.web.dto.CheckoutConfirmDto;
+import com.ajromero.webapp.web.dto.CheckoutInfoDto;
+import com.ajromero.webapp.web.dto.CheckoutPaymentDto;
+import com.ajromero.webapp.web.dto.CheckoutProductDto;
+import com.ajromero.webapp.web.dto.CheckoutWithShippingDto;
+import com.ajromero.webapp.web.dto.ShippingDto;
+import com.ajromero.webapp.web.mapper.CardMapper;
+import com.ajromero.webapp.web.mapper.CheckoutBasicMapper;
+import com.ajromero.webapp.web.mapper.CheckoutInfoMapper;
+import com.ajromero.webapp.web.mapper.CheckoutProductMapper;
+import com.ajromero.webapp.web.mapper.CheckoutShippingMapper;
 import com.ajromero.webapp.web.validation.IVerifyContent;
 import com.ajromero.webapp.web.validation.checkout.CheckoutValidator;
 import lombok.AllArgsConstructor;
-import org.hibernate.annotations.Check;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
@@ -28,7 +47,7 @@ public class CheckoutServiceFacade {
     private final ICheckoutRepository checkouts;
     private final CheckoutInfoMapper ckInfoMapper;
     private final CardMapper cardMapper;
-
+    private static final String NOMATCH = "id and URI id don't match";
     private CheckoutValidator ckValidator;
 
     public Checkout basicRespCheckout(CheckoutBasicDto resource) {
@@ -39,7 +58,9 @@ public class CheckoutServiceFacade {
             customer = customers.findById(this.getUserId()).orElseThrow();
             checkout.setCustomer(customer);
         }
-        checkout.getProducts().forEach(product -> {product.setCheckout(checkout);});
+        checkout.getProducts().forEach(product ->
+            product.setCheckout(checkout)
+        );
 
         checkout.setStatus(Checkout.Status.OPEN);
 
@@ -56,11 +77,11 @@ public class CheckoutServiceFacade {
     public CheckoutBasicDto updateProductQuantity(Long id, CheckoutProductDto pdt) {
         Checkout checkout = this.checkoutVerification(id);
 
-        boolean idExistsInCk = checkout.getProducts().stream().
-                anyMatch(item -> item.getProduct().getId().equals(pdt.getIdProduct()));
+        boolean idExistsInCk = checkout.getProducts().stream()
+                .anyMatch(item -> item.getProduct().getId().equals(pdt.getIdProduct()));
 
         verifyContent.verifyContent(!idExistsInCk,
-                "Product with id "+pdt.getIdProduct()+" no found in checkout");
+                "Product with id " + pdt.getIdProduct() + " no found in checkout");
         ckValidator.validate(ckMapper.toDto(checkout));
 
         CheckoutProduct ckproduct = checkout.getProducts().stream()
@@ -75,16 +96,17 @@ public class CheckoutServiceFacade {
         return ckMapper.toDto(resource);
     }
 
-    private String getUserId(){
+    private String getUserId() {
         return SecurityContextHolder.getContext().getAuthentication().getName();
     }
 
     public Checkout removeCheckoutProduct(Long id, Long idProduct) {
         Checkout checkout = this.checkoutVerification(id);
 
-        boolean idExistsInCk = checkout.getProducts().stream().
-                anyMatch(item -> item.getProduct().getId().equals(idProduct));
-        verifyContent.verifyContent(!idExistsInCk, "Product with id "+idProduct+" no found in checkout");
+        boolean idExistsInCk = checkout.getProducts().stream()
+                .anyMatch(item -> item.getProduct().getId().equals(idProduct));
+        verifyContent.verifyContent(!idExistsInCk,
+                "Product with id " + idProduct + " no found in checkout");
 
         CheckoutProduct rmProduct = checkout.getProducts().stream()
                 .filter(detail -> detail.getProduct().getId().equals(idProduct))
@@ -100,7 +122,8 @@ public class CheckoutServiceFacade {
         Checkout checkout = this.checkoutVerification(id);
         verifyContent.verifyBadRequest(!addressesRepository.existsById(resource.getIdShipping()),
                 id + " id URI not found in Customer Addresses");
-        CustomerAddress address = addressesRepository.findById(resource.getIdShipping()).orElseThrow();
+        CustomerAddress address = addressesRepository
+                .findById(resource.getIdShipping()).orElseThrow();
 
         verifyContent.verifyBadRequest(checkout.getShippingAddress() != null,
                 "Address already added");
@@ -112,10 +135,11 @@ public class CheckoutServiceFacade {
     public CheckoutWithShippingDto updateShippingAddress(Long id, ShippingDto resource) {
         Checkout checkout = this.checkoutVerification(id);
         verifyContent.verifyBadRequest(!id.equals(resource.getId()),
-                "id and URI id don't match");
+                NOMATCH);
         verifyContent.verifyBadRequest(!addressesRepository.existsById(resource.getIdShipping()),
                 id + " id URI not found in Customer Addresses");
-        CustomerAddress address = addressesRepository.findById(resource.getIdShipping()).orElseThrow();
+        CustomerAddress address = addressesRepository
+                .findById(resource.getIdShipping()).orElseThrow();
 
         checkout.setShippingAddress(address);
         return ckShippingMapper.toDto(checkout);
@@ -129,7 +153,7 @@ public class CheckoutServiceFacade {
         verifyContent.verifyBadRequest(!payment.getCustomer()
                 .getId().equals(this.getUserId()),"Card id is not valid");
 
-        verifyContent.verifyBadRequest(checkout.getCardPayment() !=null,
+        verifyContent.verifyBadRequest(checkout.getCardPayment() != null,
                 "Payment method already added");
 
         checkout.setCardPayment(payment);
@@ -139,7 +163,7 @@ public class CheckoutServiceFacade {
     public String updatePaymentMethod(Long id, CheckoutPaymentDto card) {
         Checkout checkout = this.checkoutVerification(id);
         verifyContent.verifyBadRequest(!id.equals(card.getId()),
-                "id and URI id don't match");
+                NOMATCH);
         verifyContent.verifyBadRequest(!cardRepository.existsById(card.getIdCard()),
                 card.getId() + "not valid payment method");
 
@@ -166,7 +190,8 @@ public class CheckoutServiceFacade {
     }
 
     public CheckoutInfoDto getCheckoutInformation(Long id) {
-        verifyContent.verifyBadRequest(!this.checkouts.existsById(id),id + " id URI not found in checkouts");
+        verifyContent.verifyBadRequest(!this.checkouts
+                .existsById(id),id + " id URI not found in checkouts");
         Checkout checkout = checkouts.findById(id).orElseThrow();
         verifyContent.verifyBadRequest(!checkout.getCustomer()
                 .getId().equals(this.getUserId()), "user not allowed to this checkout"
@@ -177,15 +202,15 @@ public class CheckoutServiceFacade {
     public CheckoutInfoDto confirmOrder(Long id,CheckoutConfirmDto detail) {
         Checkout checkout = this.checkoutVerification(id);
         verifyContent.verifyBadRequest(!id.equals(detail.getId()),
-                "id and URI id don't match");
+                NOMATCH);
 
         this.ckValidator.validateOrder(checkout);
 
         CCheckoutDto card = cardMapper.toDto(checkout.getCardPayment());
         card.setSecurityCode(detail.getSecurityCode());
         checkout.setPaymentProcessor(new CardProcessor(card));
-        verifyContent.verifyBadRequest(checkout.getPaymentCode().isEmpty()
-                ,"Card got issue from the bank");
+        verifyContent.verifyBadRequest(checkout.getPaymentCode().isEmpty(),
+                "Card got issue from the bank");
         checkout.setStatus(Checkout.Status.DONE);
         return ckInfoMapper.toDto(checkout);
 

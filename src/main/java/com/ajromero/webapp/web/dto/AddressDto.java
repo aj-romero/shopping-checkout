@@ -1,7 +1,6 @@
 package com.ajromero.webapp.web.dto;
 
 import com.ajromero.common.interfaces.IDto;
-import com.ajromero.webapp.persistence.domain.Customer;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;

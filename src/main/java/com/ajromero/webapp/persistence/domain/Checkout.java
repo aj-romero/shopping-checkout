@@ -2,16 +2,29 @@ package com.ajromero.webapp.persistence.domain;
 
 import com.ajromero.common.persistence.IEntity;
 import com.ajromero.webapp.payment.IPaymentProcessor;
-import com.ajromero.webapp.web.dto.CheckoutProductDto;
-import jakarta.persistence.*;
-import lombok.Builder;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
+import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
+import java.util.Date;
+import java.util.Set;
+import java.util.TreeSet;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.Date;
-import java.util.Set;
-import java.util.TreeSet;
 
 @Entity
 @Table(name = "checkouts")
@@ -52,10 +65,8 @@ public class Checkout implements IEntity {
     @OneToMany(mappedBy = "checkout", cascade = CascadeType.ALL)
     private Set<CheckoutProduct> products;
 
-
-
     @Transient
-    private IPaymentProcessor paymentProcessor;
+    private transient IPaymentProcessor paymentProcessor;
 
     public IPaymentProcessor getPaymentProcessor() {
         return paymentProcessor;
@@ -71,15 +82,15 @@ public class Checkout implements IEntity {
         return this.products.stream().mapToDouble(CheckoutProduct::getTotal).sum();
     }
 
-    public void addDetail(CheckoutProduct detail){
-        if(this.products == null) {
+    public void addDetail(CheckoutProduct detail) {
+        if (this.products == null) {
             this.products = new TreeSet<>();
         }
         detail.setCheckout(this);
         products.add(detail);
     }
 
-    public void subtractDetail(CheckoutProduct detail){
+    public void subtractDetail(CheckoutProduct detail) {
         if (this.products != null) {
             detail.setCheckout(this);
             products.remove(detail);

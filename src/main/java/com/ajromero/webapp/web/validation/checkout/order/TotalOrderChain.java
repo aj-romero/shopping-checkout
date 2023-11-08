@@ -1,6 +1,5 @@
 package com.ajromero.webapp.web.validation.checkout.order;
 
-import com.ajromero.webapp.persistence.domain.CardPayment;
 import com.ajromero.webapp.persistence.domain.Checkout;
 import com.ajromero.webapp.web.validation.IVerifyContent;
 import com.ajromero.webapp.web.validation.checkout.ICheckoutChain;
@@ -24,7 +23,7 @@ public class TotalOrderChain implements ICheckoutChain<Checkout> {
             result = false;
         }
 
-        if( validator != null) {
+        if (validator != null) {
             return this.validator.validate(resource);
         }
         return result;

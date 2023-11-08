@@ -16,6 +16,6 @@ public class PayPal {
 
     public String getSecurityCode(Double amount) {
         GenerateUuid uuid = GenerateUuid.getInstance();
-        return this.email + " PP - " + uuid.generateCode() +" - "+ amount + " USD$";
+        return this.email + " PP - " + uuid.generateCode() + " - " + amount + " USD$";
     }
 }

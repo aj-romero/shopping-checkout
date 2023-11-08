@@ -48,7 +48,7 @@ class ProductTest {
         assertThat(product,is(equalTo(otherProduct)));
         assertThat(product.hashCode(),is(equalTo(otherProduct.hashCode())));
         assertThat(product,not(equalTo(null)));
-        assertFalse(product.equals(null));
+        assertNotEquals(null,product);
 
     }
 

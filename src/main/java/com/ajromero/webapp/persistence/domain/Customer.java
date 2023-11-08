@@ -1,12 +1,18 @@
 package com.ajromero.webapp.persistence.domain;
 
 import com.ajromero.common.persistence.IEntity;
-import jakarta.persistence.*;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import java.util.Set;
+import java.util.TreeSet;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.Set;
-import java.util.TreeSet;
+
 
 @Entity
 @Table(name = "customers")
@@ -49,7 +55,7 @@ public class Customer implements IEntity {
         this.cards = new TreeSet<>();
     }
 
-    public void addAddress(CustomerAddress address){
+    public void addAddress(CustomerAddress address) {
         address.setCustomer(this);
         this.addresses.add(address);
     }
@@ -61,8 +67,12 @@ public class Customer implements IEntity {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         Customer customer = (Customer) o;
         return this.getId().equals(customer.getId());
     }
@@ -74,8 +84,8 @@ public class Customer implements IEntity {
 
     @Override
     public String toString() {
-        return "Customer (" +
-                "id='" + id + '\'' +
-                ')';
+        return "Customer ("
+                + "id='" + id + '\''
+                + ')';
     }
 }

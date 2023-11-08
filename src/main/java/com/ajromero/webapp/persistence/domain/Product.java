@@ -1,9 +1,12 @@
 package com.ajromero.webapp.persistence.domain;
 
 import com.ajromero.common.persistence.IEntity;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -48,8 +51,12 @@ public class Product implements IEntity {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         Product product = (Product) o;
         return this.getCode().equals(product.getCode());
     }
@@ -61,13 +68,13 @@ public class Product implements IEntity {
 
     @Override
     public String toString() {
-        return "Product (" +
-                "id=" + id +
-                ", code='" + code + '\'' +
-                ", name='" + name + '\'' +
-                ", stock=" + stock +
-                ", price=" + price +
-                ')';
+        return "Product ("
+                + "id=" + id
+                + ", code='" + code + '\''
+                + ", name='" + name + '\''
+                + ", stock=" + stock
+                + ", price=" + price
+                + ')';
     }
 
 }

@@ -1,12 +1,13 @@
 package com.ajromero.webapp.payment;
 
-import com.ajromero.common.interfaces.IDto;
 import com.ajromero.webapp.payment.methods.PayPal;
 import com.ajromero.webapp.persistence.domain.Checkout;
 
-public class PayPalProcessor implements IPaymentProcessor{
+import java.io.Serializable;
 
-    private PayPal payPal;
+public class PayPalProcessor implements IPaymentProcessor, Serializable {
+
+    private transient PayPal payPal;
 
     public  PayPalProcessor(String email) {
         payPal = new PayPal(email);
@@ -14,7 +15,6 @@ public class PayPalProcessor implements IPaymentProcessor{
 
     @Override
     public String pay(Checkout checkout) {
-        //checkout.setPaymentMethod(IPaymentMethod );
         return payPal.getSecurityCode(checkout.getTotalCheckout());
     }
 }

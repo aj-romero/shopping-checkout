@@ -2,11 +2,11 @@ package com.ajromero.webapp.web.dto;
 
 import com.ajromero.common.interfaces.IDto;
 import jakarta.validation.Valid;
+import java.util.Set;
+import java.util.TreeSet;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.Set;
-import java.util.TreeSet;
 
 @Getter
 @Setter
