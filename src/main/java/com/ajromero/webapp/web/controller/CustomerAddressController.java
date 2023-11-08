@@ -1,6 +1,5 @@
 package com.ajromero.webapp.web.controller;
 
-import com.ajromero.webapp.persistence.domain.Product;
 import com.ajromero.webapp.service.interfaces.IAddressService;
 import com.ajromero.webapp.web.dto.AddressDto;
 import jakarta.validation.Valid;
@@ -24,13 +23,6 @@ public class CustomerAddressController {
     @GetMapping
     public ResponseEntity<List<AddressDto>> getCustomerAddresses() {
         return ResponseEntity.ok().body(addressService.findAll());
-    }
-
-    @GetMapping(path = "/{id}")
-    public ResponseEntity<AddressDto> getAddress(
-            @PathVariable("id")
-            final @Positive Long id) {
-        return ResponseEntity.ok().body(addressService.findById(id).orElseThrow());
     }
 
     @PostMapping

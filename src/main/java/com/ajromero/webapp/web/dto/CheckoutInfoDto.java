@@ -1,6 +1,5 @@
 package com.ajromero.webapp.web.dto;
 
-import com.ajromero.webapp.persistence.domain.CardPayment;
 import com.ajromero.webapp.persistence.domain.Checkout;
 import com.ajromero.webapp.persistence.domain.Customer;
 import lombok.Getter;

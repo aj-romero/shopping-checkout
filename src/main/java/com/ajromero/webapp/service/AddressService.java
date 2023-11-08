@@ -63,16 +63,11 @@ public class AddressService implements IAddressService {
     @Override
     @Transactional (readOnly = true)
     public List<AddressDto> findAll() {
-        List<AddressDto> list = addresses.findAll().stream().map(addressMapper::toDto).toList();
+        String userId = getUserId();
+        Customer actual = customers.findById(userId).orElseThrow();
+        List<AddressDto> list = addresses.findByCustomer(actual).stream().map(addressMapper::toDto).toList();
         verifyContent.verifyContent(list.isEmpty(), "No addresses found");
         return list;
     }
 
-    @Override
-    @Transactional (readOnly = true)
-    public Optional<AddressDto> findById(Long id) {
-        Optional<AddressDto> address = addresses.findById(id).map(addressMapper::toDto);
-        verifyContent.verifyContent(address.isEmpty(), "Address not found");
-        return address;
-    }
 }

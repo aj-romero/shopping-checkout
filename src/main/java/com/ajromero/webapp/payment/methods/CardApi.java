@@ -13,7 +13,7 @@ public class CardApi {
 
     public String getSecurityCode(Double amount) {
         GenerateUuid uuid = GenerateUuid.getInstance();
-        return "**"+ card.getCreditCardNumber().substring(card.getCreditCardNumber().length()-4)+
+        return "**"+ card.getCardNumber().substring(card.getCardNumber().length()-4)+
                 " CP - " + uuid.generateCode() +" - "+ amount + " USD$";
     }
 }

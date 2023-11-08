@@ -10,7 +10,6 @@ public interface CustomerMapper {
 
     CustomerDto toDto(Customer customer);
 
-    @Mapping(target = "id", ignore = true)
     @Mapping(target = "addresses", ignore = true)
     @Mapping(target = "cards", ignore = true)
     Customer toEntity(CustomerDto customerDto);

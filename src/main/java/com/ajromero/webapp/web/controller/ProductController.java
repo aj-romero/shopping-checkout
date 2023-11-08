@@ -27,10 +27,10 @@ public class ProductController {
         return ResponseEntity.ok().body(productService.findAll());
     }
 
-    @GetMapping(path = "/{id}")
+   /* @GetMapping(path = "/{id}")
     public ResponseEntity<Product> getUser(
             @PathVariable("id")
             final @Positive Long id) {
         return ResponseEntity.ok().body(productService.findById(id).orElseThrow());
-    }
+    }*/
 }

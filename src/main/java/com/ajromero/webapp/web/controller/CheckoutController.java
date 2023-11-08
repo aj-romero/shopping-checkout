@@ -3,7 +3,6 @@ package com.ajromero.webapp.web.controller;
 import com.ajromero.webapp.service.interfaces.ICheckoutService;
 import com.ajromero.webapp.web.dto.*;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -78,6 +77,13 @@ public class CheckoutController {
     public ResponseEntity<CheckoutInfoDto> getCheckout(
             @PathVariable("id") final @Positive Long id) {
         return new ResponseEntity<>(checkoutService.getCheckoutInfo(id), HttpStatus.OK);
+    }
+
+    @PostMapping("/{id}/generateOrder")
+    public ResponseEntity<CheckoutInfoDto> confirmOrder(
+            @PathVariable("id") final @Positive Long id,
+            @RequestBody @Valid final CheckoutConfirmDto resource) {
+        return new ResponseEntity<>(checkoutService.confirmOrder(id,resource), HttpStatus.OK);
     }
 
 

@@ -39,10 +39,12 @@ public class CheckoutService implements ICheckoutService {
     }
 
     @Override
+    @Transactional
     public CheckoutBasicDto updateQuantityProduct(Long id, CheckoutProductDto product) {
-        Checkout updateCheckout = facade.updateProductQuantity(id, product);
+        /*Checkout updateCheckout = facade.updateProductQuantity(id, product);
         Checkout result = checkouts.save(updateCheckout);
-        return facade.toDto(result);
+        return facade.toDto(result);*/
+        return  facade.updateProductQuantity(id,product);
     }
 
     @Override
@@ -83,5 +85,11 @@ public class CheckoutService implements ICheckoutService {
     @Override
     public CheckoutInfoDto getCheckoutInfo(Long id) {
         return facade.getCheckoutInformation(id);
+    }
+
+    @Override
+    @Transactional
+    public CheckoutInfoDto confirmOrder(Long id, CheckoutConfirmDto resource) {
+        return facade.confirmOrder(id,resource);
     }
 }

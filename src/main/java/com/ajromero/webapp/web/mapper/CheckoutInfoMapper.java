@@ -26,6 +26,8 @@ public interface CheckoutInfoMapper {
     CheckoutProductDto checkoutProductToCheckoutProductDto(CheckoutProduct checkoutProduct);
 
     @Mapping(target = "paymentProcessor", ignore = true)
+    @Mapping(target = "shippingAddress.customer", ignore = true)
+    @Mapping(target = "cardPayment.customer", ignore = true)
     Checkout toEntity(CheckoutInfoDto dto);
     Set<CheckoutProduct> toEntityList(Set<CheckoutProductDto> dtos);
 

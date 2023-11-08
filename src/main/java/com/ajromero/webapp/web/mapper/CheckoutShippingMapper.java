@@ -24,6 +24,14 @@ public interface CheckoutShippingMapper {
 
 
     @Mapping(target = "shippingAddress", source = "shippingAddress")
+    @Mapping(target = "shippingAddress.customer", ignore = true)
+    @Mapping(target = "customer", ignore = true)
+    @Mapping(target = "paymentProcessor", ignore = true)
+    @Mapping(target = "paymentCode", ignore = true)
+    @Mapping(target = "status", ignore = true)
+    @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "updatedAt", ignore = true)
+    @Mapping(target = "cardPayment", ignore = true)
     Checkout toEntity(CheckoutWithShippingDto dto);
     Set<CheckoutProduct> toEntityList(Set<CheckoutProductDto> dtos);
 

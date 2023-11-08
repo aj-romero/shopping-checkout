@@ -1,15 +1,14 @@
 package com.ajromero.webapp.service;
 
+import com.ajromero.webapp.payment.CardProcessor;
 import com.ajromero.webapp.persistence.domain.*;
 import com.ajromero.webapp.persistence.repositories.*;
 import com.ajromero.webapp.web.dto.*;
-import com.ajromero.webapp.web.mapper.CheckoutBasicMapper;
-import com.ajromero.webapp.web.mapper.CheckoutInfoMapper;
-import com.ajromero.webapp.web.mapper.CheckoutProductMapper;
-import com.ajromero.webapp.web.mapper.CheckoutShippingMapper;
+import com.ajromero.webapp.web.mapper.*;
 import com.ajromero.webapp.web.validation.IVerifyContent;
 import com.ajromero.webapp.web.validation.checkout.CheckoutValidator;
 import lombok.AllArgsConstructor;
+import org.hibernate.annotations.Check;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
@@ -28,18 +27,19 @@ public class CheckoutServiceFacade {
     private final ICardPaymentRepository cardRepository;
     private final ICheckoutRepository checkouts;
     private final CheckoutInfoMapper ckInfoMapper;
+    private final CardMapper cardMapper;
 
-    private CheckoutValidator basicValidator;
+    private CheckoutValidator ckValidator;
 
     public Checkout basicRespCheckout(CheckoutBasicDto resource) {
-        boolean valid = basicValidator.validate(resource);
+        boolean valid = ckValidator.validate(resource);
         Customer customer;
         Checkout checkout = ckMapper.toEntity(resource);
         if (valid) {
             customer = customers.findById(this.getUserId()).orElseThrow();
             checkout.setCustomer(customer);
         }
-        checkout.getProducts().stream().forEach(product -> {product.setCheckout(checkout);});
+        checkout.getProducts().forEach(product -> {product.setCheckout(checkout);});
 
         checkout.setStatus(Checkout.Status.OPEN);
 
@@ -48,32 +48,26 @@ public class CheckoutServiceFacade {
 
     public CheckoutProduct addProduct(Long id, CheckoutProductDto productDto) {
         this.checkoutVerification(id);
-        basicValidator.validateProduct(productDto);
-        Checkout checkout = checkouts.findById(id).orElseThrow();
-        verifyContent.verifyBadRequest(checkout.getStatus()
-                .equals(Checkout.Status.DONE),"Checkout is not available for update");
+        ckValidator.validateProduct(productDto);
 
         return ckProductMapper.toEntity(productDto);
     }
 
-    public Checkout updateProductQuantity(Long id, CheckoutProductDto pdt) {
-        this.checkoutVerification(id);
+    public CheckoutBasicDto updateProductQuantity(Long id, CheckoutProductDto pdt) {
+        Checkout checkout = this.checkoutVerification(id);
 
-        Checkout checkout = checkouts.findById(id).orElseThrow();
-        verifyContent.verifyBadRequest(checkout.getStatus()
-                .equals(Checkout.Status.DONE),"Checkout is not available for update");
         boolean idExistsInCk = checkout.getProducts().stream().
                 anyMatch(item -> item.getProduct().getId().equals(pdt.getIdProduct()));
 
-        verifyContent.verifyContent(!idExistsInCk, "Product with id "+pdt.getIdProduct()+" no found in checkout");
-        basicValidator.validate(ckMapper.toDto(checkout));
+        verifyContent.verifyContent(!idExistsInCk,
+                "Product with id "+pdt.getIdProduct()+" no found in checkout");
+        ckValidator.validate(ckMapper.toDto(checkout));
 
         CheckoutProduct ckproduct = checkout.getProducts().stream()
                 .filter(detail -> detail.getProduct().getId().equals(pdt.getIdProduct()))
                 .findFirst().orElseThrow();
         ckproduct.adjustQuatity(pdt.getQuantity());
-        checkout.addDetail(ckproduct);
-        return checkout;
+        return this.toDto(checkout);
 
     }
 
@@ -86,10 +80,8 @@ public class CheckoutServiceFacade {
     }
 
     public Checkout removeCheckoutProduct(Long id, Long idProduct) {
-        this.checkoutVerification(id);
-        Checkout checkout = checkouts.findById(id).orElseThrow();
-        verifyContent.verifyBadRequest(checkout.getStatus()
-                .equals(Checkout.Status.DONE),"Checkout is not available for update");
+        Checkout checkout = this.checkoutVerification(id);
+
         boolean idExistsInCk = checkout.getProducts().stream().
                 anyMatch(item -> item.getProduct().getId().equals(idProduct));
         verifyContent.verifyContent(!idExistsInCk, "Product with id "+idProduct+" no found in checkout");
@@ -105,14 +97,11 @@ public class CheckoutServiceFacade {
     }
 
     public CheckoutWithShippingDto saveShippingAddress(Long id, ShippingDto resource) {
-        this.checkoutVerification(id);
+        Checkout checkout = this.checkoutVerification(id);
         verifyContent.verifyBadRequest(!addressesRepository.existsById(resource.getIdShipping()),
                 id + " id URI not found in Customer Addresses");
         CustomerAddress address = addressesRepository.findById(resource.getIdShipping()).orElseThrow();
 
-        Checkout checkout = checkouts.findById(id).orElseThrow();
-        verifyContent.verifyBadRequest(checkout.getStatus()
-                .equals(Checkout.Status.DONE),"Checkout is not available for update");
         verifyContent.verifyBadRequest(checkout.getShippingAddress() != null,
                 "Address already added");
         checkout.setShippingAddress(address);
@@ -121,30 +110,25 @@ public class CheckoutServiceFacade {
     }
 
     public CheckoutWithShippingDto updateShippingAddress(Long id, ShippingDto resource) {
-        this.checkoutVerification(id);
+        Checkout checkout = this.checkoutVerification(id);
         verifyContent.verifyBadRequest(!id.equals(resource.getId()),
                 "id and URI id don't match");
         verifyContent.verifyBadRequest(!addressesRepository.existsById(resource.getIdShipping()),
                 id + " id URI not found in Customer Addresses");
         CustomerAddress address = addressesRepository.findById(resource.getIdShipping()).orElseThrow();
 
-        Checkout checkout = checkouts.findById(id).orElseThrow();
-        verifyContent.verifyBadRequest(checkout.getStatus()
-                .equals(Checkout.Status.DONE),"Checkout is not available for update");
         checkout.setShippingAddress(address);
         return ckShippingMapper.toDto(checkout);
     }
 
     public String setPaymentMethod(Long id, CheckoutPaymentDto resource) {
-        this.checkoutVerification(id);
+        Checkout checkout = this.checkoutVerification(id);
         verifyContent.verifyBadRequest(!cardRepository.existsById(resource.getIdCard()),
                 resource.getIdCard() + "not valid payment method");
         CardPayment payment = cardRepository.findById(resource.getIdCard()).orElseThrow();
         verifyContent.verifyBadRequest(!payment.getCustomer()
                 .getId().equals(this.getUserId()),"Card id is not valid");
-        Checkout checkout = checkouts.findById(id).orElseThrow();
-        verifyContent.verifyBadRequest(checkout.getStatus()
-                .equals(Checkout.Status.DONE),"Checkout is not available for update");
+
         verifyContent.verifyBadRequest(checkout.getCardPayment() !=null,
                 "Payment method already added");
 
@@ -153,7 +137,7 @@ public class CheckoutServiceFacade {
     }
 
     public String updatePaymentMethod(Long id, CheckoutPaymentDto card) {
-        this.checkoutVerification(id);
+        Checkout checkout = this.checkoutVerification(id);
         verifyContent.verifyBadRequest(!id.equals(card.getId()),
                 "id and URI id don't match");
         verifyContent.verifyBadRequest(!cardRepository.existsById(card.getIdCard()),
@@ -162,9 +146,6 @@ public class CheckoutServiceFacade {
         CardPayment payment = cardRepository.findById(card.getIdCard()).orElseThrow();
         verifyContent.verifyBadRequest(!payment.getCustomer()
                 .getId().equals(this.getUserId()),"Card id is not valid");
-        Checkout checkout = checkouts.findById(id).orElseThrow();
-        verifyContent.verifyBadRequest(checkout.getStatus()
-                .equals(Checkout.Status.DONE),"Checkout is not available for update");
         verifyContent.verifyBadRequest(checkout.getCardPayment() == null,
                 "Payment method was not added to this checkout");
         checkout.setCardPayment(payment);
@@ -172,16 +153,41 @@ public class CheckoutServiceFacade {
 
     }
 
-    private void checkoutVerification(Long id) {
-        verifyContent.verifyBadRequest(!this.checkouts.existsById(id),id + " id URI not found in checkouts");
-        verifyContent.verifyBadRequest(!this.checkouts.findById(id).
-                orElseThrow().getCustomer().getId().equals(this.getUserId()), "user not allowed to this checkout"
+    private Checkout checkoutVerification(Long id) {
+        Checkout ck = this.checkouts.findById(id).orElseThrow();
+        verifyContent.verifyBadRequest(ck == null,id + " id URI not found in checkouts");
+        verifyContent.verifyBadRequest(!ck.getCustomer()
+                .getId().equals(this.getUserId()), "user not allowed to this checkout"
         );
+
+        verifyContent.verifyBadRequest(ck.getStatus()
+                .equals(Checkout.Status.DONE),"Checkout is not available for update");
+        return ck;
     }
 
     public CheckoutInfoDto getCheckoutInformation(Long id) {
-        this.checkoutVerification(id);
+        verifyContent.verifyBadRequest(!this.checkouts.existsById(id),id + " id URI not found in checkouts");
         Checkout checkout = checkouts.findById(id).orElseThrow();
+        verifyContent.verifyBadRequest(!checkout.getCustomer()
+                .getId().equals(this.getUserId()), "user not allowed to this checkout"
+        );
         return ckInfoMapper.toDto(checkout);
+    }
+
+    public CheckoutInfoDto confirmOrder(Long id,CheckoutConfirmDto detail) {
+        Checkout checkout = this.checkoutVerification(id);
+        verifyContent.verifyBadRequest(!id.equals(detail.getId()),
+                "id and URI id don't match");
+
+        this.ckValidator.validateOrder(checkout);
+
+        CCheckoutDto card = cardMapper.toDto(checkout.getCardPayment());
+        card.setSecurityCode(detail.getSecurityCode());
+        checkout.setPaymentProcessor(new CardProcessor(card));
+        verifyContent.verifyBadRequest(checkout.getPaymentCode().isEmpty()
+                ,"Card got issue from the bank");
+        checkout.setStatus(Checkout.Status.DONE);
+        return ckInfoMapper.toDto(checkout);
+
     }
 }

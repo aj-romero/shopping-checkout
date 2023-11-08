@@ -27,14 +27,7 @@ public class CustomerService implements ICustomerService {
 
 
     CustomerMapper customerMapper;
-    @Override
-    @Transactional (readOnly = true)
-    public List<CustomerDto> findAll() {
-        List<CustomerDto> list = customers.findAll()
-                .stream().map(customerMapper::toDto).toList();
-        verifyContent.verifyContent(list.isEmpty(),"Customers aren't available");
-        return list;
-    }
+
 
     @Override
     @Transactional (readOnly = true)
@@ -45,11 +38,6 @@ public class CustomerService implements ICustomerService {
         return customer;
     }
 
-    @Override
-    @Transactional (readOnly = true)
-    public Optional<CustomerDto> findById(String id) {
-        return Optional.of(customers.findById(id).map(customerMapper::toDto).orElseThrow());
-    }
 
     @Override
     @Transactional
@@ -57,7 +45,7 @@ public class CustomerService implements ICustomerService {
         String userId = this.getUserId();
         verifyContent.verifyEmail(customers, resource.getEmail());
         Customer newCustomer = customerMapper.toEntity(resource);
-        if(userId.isEmpty()){
+        if (userId.isEmpty()) {
             newCustomer.setId("uuid-new-customer01" + Math.random());
         } else {
             newCustomer.setId(userId);
@@ -71,6 +59,10 @@ public class CustomerService implements ICustomerService {
     public CustomerDto update(CustomerDto resource) {
         String userId = this.getUserId();
         Optional<Customer> dbCustomer = customers.findById(userId);
+        verifyContent.verifyBadRequest(
+                dbCustomer.orElseThrow().getId().equals(userId),
+                "Customer no have privilege to update this information"
+        );
         dbCustomer.ifPresent((customer)->{
             customer.setFirstName(resource.getFirstName());
             customer.setLastName(resource.getLastName());

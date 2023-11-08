@@ -21,4 +21,6 @@ public interface ICheckoutService {
     String updatePaymentMethod(Long id, CheckoutPaymentDto resource);
 
     CheckoutInfoDto getCheckoutInfo(Long id);
+
+    CheckoutInfoDto confirmOrder(Long id, CheckoutConfirmDto resource);
 }

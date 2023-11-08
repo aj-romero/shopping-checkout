@@ -12,6 +12,8 @@ import lombok.Setter;
 @Setter
 public class CustomerDto implements IDto {
 
+    private String id;
+
     @Size(min = 2, max = 50, message = "min length is 2 and max length is 50 characters")
     @NotBlank(message = " is required")
     @Pattern(regexp = "^([a-zA-ZáéíóúüÁÉÍÓÚÜñÑ]{2,50}[\\,\\-\\.]{0,1}[\\s]{0,1}){1,3}$",

@@ -17,5 +17,6 @@ public interface CheckoutProductMapper {
 
     @Mapping(target = "total", ignore = true)
     @Mapping( target = "product.id", source = "idProduct")
+    @Mapping(target = "checkout", ignore = true)
     CheckoutProduct toEntity(CheckoutProductDto dto);
 }

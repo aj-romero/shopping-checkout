@@ -14,12 +14,14 @@ import lombok.Setter;
 @NoArgsConstructor
 public class CCheckoutDto implements IDto {
 
-    @NotBlank(message = "is required")
-    @Pattern(regexp = "^[0-9]{13,19}$", message = "no valid")
-    private String creditCardNumber;
+    private Long id;
 
     @NotBlank(message = "is required")
-    private String cardholderName;
+    @Pattern(regexp = "^[0-9]{13,19}$", message = "no valid")
+    private String cardNumber;
+
+    @NotBlank(message = "is required")
+    private String cardHoldername;
 
     @NotBlank(message = "is required")
     @Pattern(regexp = "^(0[1-9]|1[0-2])/[0-9]{2}$")
