@@ -71,7 +71,8 @@ public class AddressService implements IAddressService {
         Customer actual = customers.findById(userId).orElseThrow();
         List<AddressDto> list = addresses.findByCustomer(actual)
                 .stream().map(addressMapper::toDto).toList();
-        verifyContent.verifyContent(list.isEmpty(), "No addresses found");
+        //verifyContent.verifyContent(list.isEmpty(), "No addresses found");
+        //La validacion no es necesaria ya que se valida en optional que devuelve un NoSuchElementException
         return list;
     }
 

@@ -124,7 +124,8 @@ public class CheckoutServiceFacade {
                 id + " id URI not found in Customer Addresses");
         CustomerAddress address = addressesRepository
                 .findById(resource.getIdShipping()).orElseThrow();
-
+        verifyContent.verifyBadRequest(!address
+                .getCustomer().getId().equals(this.getUserId()),"Address not valid");
         verifyContent.verifyBadRequest(checkout.getShippingAddress() != null,
                 "Address already added");
         checkout.setShippingAddress(address);
@@ -140,6 +141,8 @@ public class CheckoutServiceFacade {
                 id + " id URI not found in Customer Addresses");
         CustomerAddress address = addressesRepository
                 .findById(resource.getIdShipping()).orElseThrow();
+        verifyContent.verifyBadRequest(!address
+                .getCustomer().getId().equals(this.getUserId()),"Address not valid");
 
         checkout.setShippingAddress(address);
         return ckShippingMapper.toDto(checkout);

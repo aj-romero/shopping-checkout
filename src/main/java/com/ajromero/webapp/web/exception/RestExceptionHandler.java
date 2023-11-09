@@ -3,6 +3,8 @@ package com.ajromero.webapp.web.exception;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
+
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -68,6 +70,17 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
                 request);
     }
 
+    @ExceptionHandler({NoSuchElementException.class})
+    protected ResponseEntity<Object> handleNoSuchElementException(
+            final RuntimeException ex,
+            final WebRequest request) {
+        final ApiError apiError = new ApiError(HttpStatus.NOT_FOUND,ex.getMessage());
+        return handleExceptionInternal(ex, apiError,
+                new HttpHeaders(),
+                HttpStatus.NOT_FOUND,
+                request);
+    }
+
     @ExceptionHandler({ MyBadRequestException.class })
     protected ResponseEntity<Object> handleBadRequestException(
             final RuntimeException ex,
@@ -97,4 +110,6 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         ApiError erroMsj = new ApiError(HttpStatus.BAD_REQUEST, ex.getMessage());
         return handleExceptionInternal(ex, erroMsj, headers, HttpStatus.BAD_REQUEST, request);
     }
+
+
 }

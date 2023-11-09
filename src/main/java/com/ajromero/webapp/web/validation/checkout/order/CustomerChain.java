@@ -18,17 +18,17 @@ public class CustomerChain implements ICheckoutChain<Checkout> {
     public Boolean validate(Checkout resource) {
         boolean result = true;
         Customer customer = resource.getCustomer();
-        if (customer.getEmail().isEmpty()) {
+        if (customer.getEmail() == null) {
             this.verifyContent.verifyBadRequest(true,
                     "Customer email is required");
             result = false;
         }
-        if (customer.getFirstName().isEmpty()) {
+        if (customer.getFirstName() == null) {
             this.verifyContent.verifyBadRequest(true,
                     "Customer first name is required");
             result = false;
         }
-        if (customer.getLastName().isEmpty()) {
+        if (customer.getLastName() == null) {
             this.verifyContent.verifyBadRequest(true,
                     "Customer last name is required");
             result = false;
